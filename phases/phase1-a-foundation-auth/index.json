@@ -71,7 +71,7 @@
       "name": "auth-ui",
       "status": "completed",
       "started_at": "2026-04-18T22:54:55+09:00",
-      "completed_at": "2026-04-18T22:56:30+09:00",
+      "completed_at": "2026-04-18T22:56:33+09:00",
       "summary": "Auth UI 구현 완료 — app/(auth)/layout.tsx(중앙 정렬 레이아웃), login/page.tsx(React Hook Form+Zod, useLogin 훅), register/page.tsx(jobType select 포함), login/__tests__/page.test.tsx(3 passed)"
     },
     {
