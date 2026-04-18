@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "shared-package-setup",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-18T22:09:09+09:00",
+      "completed_at": "2026-04-18T22:15:00+09:00",
+      "summary": "@2chi/shared 패키지 세팅 완료 — ApiResponse/UserDto/AuthTokensDto 타입, registerSchema/loginSchema Zod 스키마 생성, tsc --noEmit 통과"
     },
     {
       "step": 2,
