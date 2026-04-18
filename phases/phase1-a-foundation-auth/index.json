@@ -23,7 +23,7 @@
       "name": "nestjs-api-scaffold",
       "status": "completed",
       "started_at": "2026-04-18T22:10:46+09:00",
-      "completed_at": "2026-04-18T22:17:00+09:00",
+      "completed_at": "2026-04-18T22:21:27+09:00",
       "summary": "NestJS API 스캐폴딩 완료 — package.json, nest-cli.json, tsconfig.json(moduleResolution:node), PrismaService/Module(글로벌), main.ts(ValidationPipe+HttpExceptionFilter+CORS), app.module.ts(APP_GUARD:JwtAuthGuard), 공통 스텁(HttpExceptionFilter, JwtAuthGuard, AuthModule, UsersModule), 최소 schema.prisma 생성 후 prisma generate, tsc --noEmit 통과"
     },
     {
