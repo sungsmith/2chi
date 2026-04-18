@@ -1,8 +1,11 @@
+.env
 node_modules/
+dist/
 .next/
 out/
 next-env.d.ts
 tsconfig.tsbuildinfo
+*.log
 
 # phase execution outputs
 phases/**/phase*-output.json
