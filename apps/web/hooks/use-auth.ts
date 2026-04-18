@@ -13,6 +13,7 @@ export function useLogin() {
     onSuccess: (res) => {
       if (res.success) {
         setAuth(res.data.accessToken, res.data.refreshToken, res.data.user);
+        document.cookie = `2chi-auth=1; path=/; max-age=${7 * 24 * 3600}; SameSite=Lax`;
         router.push('/');
       }
     },
@@ -28,6 +29,7 @@ export function useRegister() {
     onSuccess: (res) => {
       if (res.success) {
         setAuth(res.data.accessToken, res.data.refreshToken, res.data.user);
+        document.cookie = `2chi-auth=1; path=/; max-age=${7 * 24 * 3600}; SameSite=Lax`;
         router.push('/');
       }
     },
@@ -40,6 +42,7 @@ export function useLogout() {
 
   return () => {
     logout();
+    document.cookie = '2chi-auth=; path=/; max-age=0';
     router.push('/login');
   };
 }
