@@ -37,7 +37,10 @@
     {
       "step": 4,
       "name": "common-infrastructure",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-18T22:28:41+09:00",
+      "completed_at": "2026-04-18T22:45:00+09:00",
+      "summary": "공통 인프라 구현 완료 — HttpExceptionFilter({ success: false, error: { code, message } } 포맷), JwtAuthGuard(AuthGuard('jwt') + Public 데코레이터 지원), CurrentUser/Public 데코레이터, e2e 테스트 환경(jest-e2e.json, common.e2e-spec.ts), tsconfig.build.json 분리, tsc --noEmit 통과"
     },
     {
       "step": 5,
