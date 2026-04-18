@@ -1,0 +1,12 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase1-c-cover-letter",
+  "steps": [
+    { "step": 0, "name": "shared-cover-letter-types", "status": "pending" },
+    { "step": 1, "name": "ai-prompts-cover-letter", "status": "pending" },
+    { "step": 2, "name": "job-postings-api", "status": "pending" },
+    { "step": 3, "name": "cover-letters-api", "status": "pending" },
+    { "step": 4, "name": "cover-letter-hooks", "status": "pending" },
+    { "step": 5, "name": "cover-letter-ui", "status": "pending" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase1-a-foundation-auth",
+  "steps": [
+    { "step": 0, "name": "monorepo-root-setup", "status": "pending" },
+    { "step": 1, "name": "shared-package-setup", "status": "pending" },
+    { "step": 2, "name": "nestjs-api-scaffold", "status": "pending" },
+    { "step": 3, "name": "prisma-schema-migration", "status": "pending" },
+    { "step": 4, "name": "common-infrastructure", "status": "pending" },
+    { "step": 5, "name": "auth-module", "status": "pending" },
+    { "step": 6, "name": "nextjs-web-scaffold", "status": "pending" },
+    { "step": 7, "name": "api-client-auth-store", "status": "pending" },
+    { "step": 8, "name": "auth-ui", "status": "pending" },
+    { "step": 9, "name": "dashboard-layout-guard", "status": "pending" }
+  ]
+}

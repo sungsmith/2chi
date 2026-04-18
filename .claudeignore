@@ -1,0 +1,44 @@
+# .claudeignore — Claude Code가 읽지 않을 파일 목록
+# 로그, 빌드 산출물, 의존성 등 불필요한 파일을 제외하여 토큰을 절약합니다.
+
+# 의존성
+node_modules/
+.pnpm-store/
+
+# 빌드 산출물
+dist/
+.next/
+out/
+build/
+
+# Prisma 생성 파일
+apps/api/src/generated/
+
+# 로그
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# 환경 변수 (실제 값 노출 방지)
+.env
+.env.local
+.env.*.local
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/settings.json
+
+# 테스트 커버리지
+coverage/
+.nyc_output/
+
+# 캐시
+.turbo/
+.eslintcache
+*.tsbuildinfo
+
+# 업로드 임시 파일
+uploads/
+tmp/

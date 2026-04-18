@@ -1,0 +1,13 @@
+{
+  "name": "2chi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "execute": "tsx scripts/execute.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

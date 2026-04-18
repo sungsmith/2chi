@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod +x /Users/sungjiwon/claude/2chi/scripts/hooks/tdd-guard.sh /Users/sungjiwon/claude/2chi/scripts/hooks/dangerous-cmd-guard.sh /Users/sungjiwon/claude/2chi/scripts/hooks/circuit-breaker.sh)",
+      "Bash(python3 -m json.tool)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Bash(npm install *)"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "phases": [
+    {
+      "dir": "phase1-a-foundation-auth",
+      "status": "pending"
+    },
+    {
+      "dir": "phase1-b-experience",
+      "status": "pending"
+    },
+    {
+      "dir": "phase1-c-cover-letter",
+      "status": "pending"
+    },
+    {
+      "dir": "phase1-d-applications-calendar",
+      "status": "pending"
+    },
+    {
+      "dir": "phase1-e-company-analysis",
+      "status": "pending"
+    }
+  ]
+}

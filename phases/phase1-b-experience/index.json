@@ -1,0 +1,12 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase1-b-experience",
+  "steps": [
+    { "step": 0, "name": "shared-experience-types", "status": "pending" },
+    { "step": 1, "name": "ai-module", "status": "pending" },
+    { "step": 2, "name": "experiences-api", "status": "pending" },
+    { "step": 3, "name": "experience-hooks", "status": "pending" },
+    { "step": 4, "name": "experience-list-page", "status": "pending" },
+    { "step": 5, "name": "experience-form-pages", "status": "pending" }
+  ]
+}

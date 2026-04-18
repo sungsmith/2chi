@@ -1,0 +1,55 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/sungjiwon/claude/2chi && pnpm lint 2>&1 | head -50; pnpm build 2>&1 | tail -20; pnpm test 2>&1 | tail -20"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/sungjiwon/claude/2chi/scripts/hooks/dangerous-cmd-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/sungjiwon/claude/2chi/scripts/hooks/tdd-guard.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/sungjiwon/claude/2chi/scripts/hooks/tdd-guard.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/sungjiwon/claude/2chi/scripts/hooks/circuit-breaker.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
