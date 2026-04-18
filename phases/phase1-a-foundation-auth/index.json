@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "prisma-schema-migration",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-18T22:21:28+09:00",
+      "completed_at": "2026-04-18T22:35:00+09:00",
+      "summary": "Phase 1 전체 도메인 Prisma 스키마 작성 완료 — User/Experience/Tag/Company/JobPosting/CoverLetter/CareerDescription/Portfolio/Application/InterviewPrep/CalendarEvent/ResumeProfile 등 19개 테이블, 마이그레이션 20260418132802_init 적용"
     },
     {
       "step": 4,
