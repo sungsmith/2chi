@@ -55,7 +55,7 @@
       "name": "nextjs-web-scaffold",
       "status": "completed",
       "started_at": "2026-04-18T22:42:35+09:00",
-      "completed_at": "2026-04-18T23:05:00+09:00",
+      "completed_at": "2026-04-18T22:51:35+09:00",
       "summary": "Next.js 14 App Router 스캐폴딩 완료 — package.json, next.config.js, tailwind.config.ts(CSS 변수+shadcn 색상), tsconfig.json, vitest.config.ts, app/layout.tsx, app/globals.css(CSS 변수), lib/utils.ts(cn), components/providers.tsx(TanStack Query), components/ui/{button,input,label,textarea,badge,card}.tsx 생성, next build 통과"
     },
     {
