@@ -5,7 +5,10 @@
     {
       "step": 0,
       "name": "monorepo-root-setup",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-18T22:07:08+09:00",
+      "completed_at": "2026-04-18T22:08:35+09:00",
+      "summary": "pnpm+Turborepo 모노레포 루트 세팅 완료 — package.json, pnpm-workspace.yaml, turbo.json, tsconfig.base.json, .env.example, .gitignore, docker-compose.yml 생성, 2chi-db/2chi-redis 컨테이너 healthy 확인"
     },
     {
       "step": 1,
