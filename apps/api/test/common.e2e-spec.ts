@@ -20,7 +20,7 @@ describe('Common infrastructure', () => {
   afterAll(() => app.close());
 
   it('unknown route should return { success: false, error }', async () => {
-    const res = await request(app.getHttpServer()).get('/unknown-route').expect(401);
+    const res = await request(app.getHttpServer()).get('/unknown-route').expect(404);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBeDefined();
   });
