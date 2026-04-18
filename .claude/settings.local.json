@@ -14,7 +14,9 @@
       "Bash(gh pr create --base main --head feat-phase1-a-foundation-auth --title 'feat: Phase 1 MVP 프로젝트 세팅 및 harness 실행 구조' --body ' *)",
       "Bash(brew install *)",
       "Bash(/opt/homebrew/bin/gh pr create --base main --head feat-phase1-a-foundation-auth --title 'feat: Phase 1 MVP 프로젝트 세팅 및 harness 실행 구조' --body ' *)",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('exitCode:', d['exitCode']\\); print\\('stderr:', d['stderr'][:500]\\); print\\('stdout tail:', d['stdout'][-2000:]\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('exitCode:', d['exitCode']\\); print\\('stderr:', d['stderr'][:500]\\); print\\('stdout tail:', d['stdout'][-2000:]\\)\")",
+      "Bash(/opt/homebrew/bin/gh pr *)",
+      "Bash(/opt/homebrew/bin/gh repo *)"
     ]
   }
 }
