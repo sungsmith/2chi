@@ -63,7 +63,7 @@
       "name": "api-client-auth-store",
       "status": "completed",
       "started_at": "2026-04-18T22:51:35+09:00",
-      "completed_at": "2026-04-18T22:54:30+09:00",
+      "completed_at": "2026-04-18T22:54:55+09:00",
       "summary": "API 클라이언트·인증 스토어·훅 구현 완료 — lib/api.ts(localStorage 2chi-auth 키에서 토큰 자동 주입), store/auth.store.ts(Zustand persist, key='2chi-auth'), hooks/use-auth.ts(useLogin/useRegister/useLogout), @testing-library/jest-dom 설치, vitest 2 passed"
     },
     {
