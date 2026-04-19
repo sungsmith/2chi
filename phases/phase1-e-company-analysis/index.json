@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "ai-prompts-company-matching",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-19T18:19:04+09:00",
+      "summary": "apps/api/src/ai/prompts/company.prompt.ts, matching.prompt.ts 생성 및 ai.service.ts, ai.module.ts 추가 — analyzeCompany/calculateMatchingScore 메서드 모두 gpt-4o-mini 사용",
+      "completed_at": "2026-04-19T18:30:00+09:00"
     },
     {
       "step": 2,
