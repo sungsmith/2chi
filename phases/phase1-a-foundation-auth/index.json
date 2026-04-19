@@ -79,7 +79,7 @@
       "name": "dashboard-layout-guard",
       "status": "completed",
       "started_at": "2026-04-19T10:17:58+09:00",
-      "completed_at": "2026-04-19T10:30:00+09:00",
+      "completed_at": "2026-04-19T10:18:58+09:00",
       "summary": "대시보드 레이아웃·인증 가드 구현 완료 — middleware.ts(쿠키 기반 미인증→/login 리다이렉트), sidebar.tsx(네비게이션+로그아웃), (dashboard)/layout.tsx+page.tsx, use-auth.ts(쿠키 설정·삭제 추가), next build 통과"
     }
   ],
