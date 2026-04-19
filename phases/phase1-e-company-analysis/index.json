@@ -24,7 +24,7 @@
       "status": "completed",
       "started_at": "2026-04-19T18:20:23+09:00",
       "summary": "apps/api/src/companies에 CompaniesModule(Controller/Service/DTOs) 구현 — GET /companies, GET /companies/:id, POST /companies/analyze 엔드포인트, 24h AI 분석 캐싱, app.module.ts 등록 완료",
-      "completed_at": "2026-04-19T18:35:00+09:00"
+      "completed_at": "2026-04-19T18:22:56+09:00"
     },
     {
       "step": 3,
