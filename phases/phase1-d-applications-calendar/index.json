@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "calendar-api",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-19T10:23:31+09:00",
+      "summary": "Calendar CRUD 모듈 구현 완료 — GET /calendar(월별 조회), POST /calendar, PATCH /calendar/:id, DELETE /calendar/:id 엔드포인트 + ForbiddenException 소유권 검증 포함, lint 통과",
+      "completed_at": "2026-04-19T10:30:00+09:00"
     },
     {
       "step": 3,
