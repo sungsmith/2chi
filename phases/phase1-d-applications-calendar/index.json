@@ -48,7 +48,7 @@
       "status": "completed",
       "started_at": "2026-04-19T17:48:01+09:00",
       "summary": "CalendarView 컴포넌트(월별 탐색 + 이벤트 목록 + 삭제)와 Applications 메인 페이지(보드/캘린더 탭 전환 + 지원 추가 모달) 구현 완료, lint 통과",
-      "completed_at": "2026-04-19T17:53:00+09:00"
+      "completed_at": "2026-04-19T17:49:00+09:00"
     },
     {
       "step": 6,
