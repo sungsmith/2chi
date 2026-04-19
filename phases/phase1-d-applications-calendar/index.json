@@ -2,13 +2,48 @@
   "project": "이취 (2chi)",
   "phase": "phase1-d-applications-calendar",
   "steps": [
-    { "step": 0, "name": "shared-application-types", "status": "pending" },
-    { "step": 1, "name": "applications-api", "status": "pending" },
-    { "step": 2, "name": "calendar-api", "status": "pending" },
-    { "step": 3, "name": "applications-calendar-hooks", "status": "pending" },
-    { "step": 4, "name": "applications-board-ui", "status": "pending" },
-    { "step": 5, "name": "calendar-ui-main-page", "status": "pending" },
-    { "step": 6, "name": "dashboard-stats", "status": "pending" },
-    { "step": 7, "name": "phase1-final-validation", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-application-types",
+      "status": "completed",
+      "started_at": "2026-04-19T10:19:32+09:00",
+      "summary": "packages/shared에 ApplicationDto, CalendarEventDto 타입과 createApplicationSchema, addStageSchema, createCalendarEventSchema Zod 스키마 추가 및 index.ts re-export 완료"
+    },
+    {
+      "step": 1,
+      "name": "applications-api",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "calendar-api",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "applications-calendar-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "applications-board-ui",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "calendar-ui-main-page",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "dashboard-stats",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "name": "phase1-final-validation",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-19T10:19:32+09:00"
 }
