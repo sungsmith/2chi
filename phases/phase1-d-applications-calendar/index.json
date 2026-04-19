@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "applications-api",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-19T10:20:16+09:00",
+      "summary": "Applications CRUD (create/read/update/delete) + ApplicationStageHistory 추가 + 마감일/면접 단계 시 CalendarEvent 자동 생성 API 구현 (e2e 5/5 통과)",
+      "completed_at": "2026-04-19T10:35:00+09:00"
     },
     {
       "step": 2,
