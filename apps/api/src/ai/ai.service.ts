@@ -25,17 +25,30 @@ export class AiService {
     keyCompetencies: string[];
     culture: string | null;
   }> {
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'user', content: buildCompanyAnalysisPrompt(companyName, jobTitle, additionalContext) },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.2,
-    });
-    const content = response.choices[0].message.content;
-    if (!content) throw new Error('AI 응답이 없습니다.');
-    return JSON.parse(content);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'user', content: buildCompanyAnalysisPrompt(companyName, jobTitle, additionalContext) },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.2,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      return JSON.parse(content) as {
+        summary: string;
+        products: string[];
+        recentNews: string[];
+        keyCompetencies: string[];
+        culture: string | null;
+      };
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
   }
 
   async calculateMatchingScore(
@@ -50,14 +63,26 @@ export class AiService {
     if (!requiredCompetencies.length) {
       return { score: 0, matchedKeywords: [], missingKeywords: [], summary: '역량 정보가 없습니다.' };
     }
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: buildMatchingPrompt(requiredCompetencies, experiences) }],
-      response_format: { type: 'json_object' },
-      temperature: 0.1,
-    });
-    const content = response.choices[0].message.content;
-    if (!content) throw new Error('AI 응답이 없습니다.');
-    return JSON.parse(content);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: buildMatchingPrompt(requiredCompetencies, experiences) }],
+        response_format: { type: 'json_object' },
+        temperature: 0.1,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      return JSON.parse(content) as {
+        score: number;
+        matchedKeywords: string[];
+        missingKeywords: string[];
+        summary: string;
+      };
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
   }
 }

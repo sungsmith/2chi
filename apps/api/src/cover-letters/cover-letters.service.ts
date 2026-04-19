@@ -23,7 +23,7 @@ export class CoverLettersService {
 
   async calculateMatching(coverLetterId: string, userId: string) {
     const coverLetter = await this.findOne(coverLetterId, userId);
-    const requiredCompetencies = (coverLetter.jobPosting as any)?.requiredCompetencies ?? [];
+    const requiredCompetencies = coverLetter.jobPosting?.requiredCompetencies ?? [];
 
     if (!requiredCompetencies.length) {
       return { score: 0, matchedKeywords: [], missingKeywords: [], summary: '채용공고 역량 정보가 없습니다.' };
@@ -34,7 +34,7 @@ export class CoverLettersService {
       title: e.title,
       action: e.action,
       result: e.result,
-      tags: (e.tags as any[]).map(({ tag }) => tag.name),
+      tags: e.tags.map((t) => t.tag.name),
     }));
 
     const result = await this.aiService.calculateMatchingScore(requiredCompetencies, expData);

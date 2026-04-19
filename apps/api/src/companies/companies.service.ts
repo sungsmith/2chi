@@ -61,7 +61,6 @@ export class CompaniesService {
       data: {
         userId,
         name: dto.name,
-        industry: dto.jobTitle,
         officialInfo: {
           summary: analysis.summary,
           products: analysis.products,
