@@ -37,7 +37,10 @@
     {
       "step": 4,
       "name": "company-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-19T18:25:12+09:00",
+      "summary": "apps/web/hooks/use-companies.ts 생성 — useCompanies/useCompany(Query) + useAnalyzeCompany/useMatchingScore(Mutation) 구현, @2chi/shared 타입(CompanyDto, MatchingScoreDto, AnalyzeCompanyInput) 사용, lint/tsc 통과",
+      "completed_at": "2026-04-19T18:30:00+09:00"
     },
     {
       "step": 5,
