@@ -2,12 +2,43 @@
   "project": "이취 (2chi)",
   "phase": "phase1-e-company-analysis",
   "steps": [
-    { "step": 0, "name": "shared-company-types", "status": "pending" },
-    { "step": 1, "name": "ai-prompts-company-matching", "status": "pending" },
-    { "step": 2, "name": "companies-api", "status": "pending" },
-    { "step": 3, "name": "matching-endpoint", "status": "pending" },
-    { "step": 4, "name": "company-hooks", "status": "pending" },
-    { "step": 5, "name": "company-ui", "status": "pending" },
-    { "step": 6, "name": "plan-e-validation", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-company-types",
+      "status": "completed",
+      "started_at": "2026-04-19T18:18:05+09:00",
+      "summary": "packages/shared에 CompanyDto, MatchingScoreDto 타입(types/company.ts)과 createCompanySchema, analyzeCompanySchema Zod 스키마(schemas/company.schema.ts) 추가 및 index.ts re-export"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-company-matching",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "companies-api",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "matching-endpoint",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "company-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "company-ui",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "plan-e-validation",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-19T18:18:05+09:00"
 }
