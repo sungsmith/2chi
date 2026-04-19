@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-04-19T10:25:08+09:00",
       "summary": "use-applications.ts (useApplications, useCreateApplication, useUpdateApplication, useDeleteApplication, useAddStage) + use-calendar.ts (useCalendarEvents, useCreateCalendarEvent, useDeleteCalendarEvent) TanStack Query 훅 구현 완료, lint 통과",
-      "completed_at": "2026-04-19T10:30:00+09:00"
+      "completed_at": "2026-04-19T10:25:56+09:00"
     },
     {
       "step": 4,
