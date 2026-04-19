@@ -53,7 +53,10 @@
     {
       "step": 6,
       "name": "dashboard-stats",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-19T17:49:01+09:00",
+      "summary": "대시보드 페이지를 useExperiences/useCoverLetters/useApplications 훅으로 실제 데이터 연결 완료 — 스텁 훅 2개(use-experiences.ts, use-cover-letters.ts) 생성 포함, lint 통과",
+      "completed_at": "2026-04-19T17:55:00+09:00"
     },
     {
       "step": 7,
