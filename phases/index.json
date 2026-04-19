@@ -15,8 +15,9 @@
     },
     {
       "dir": "phase1-d-applications-calendar",
-      "status": "error",
-      "failed_at": "2026-04-19T10:27:34+09:00"
+      "status": "completed",
+      "failed_at": "2026-04-19T10:27:34+09:00",
+      "completed_at": "2026-04-19T17:58:21+09:00"
     },
     {
       "dir": "phase1-e-company-analysis",
