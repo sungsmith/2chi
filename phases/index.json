@@ -21,7 +21,8 @@
     },
     {
       "dir": "phase1-e-company-analysis",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-19T18:35:48+09:00"
     }
   ]
 }
