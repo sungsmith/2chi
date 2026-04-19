@@ -30,8 +30,11 @@ export function useCoverLetter(id: string) {
 export function useCreateCoverLetter() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateCoverLetterInput) =>
-      api.post<CoverLetterDto>('/cover-letters', data),
+    mutationFn: async (data: CreateCoverLetterInput) => {
+      const res = await api.post<CoverLetterDto>('/cover-letters', data);
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: CL_KEY }),
   });
 }
@@ -39,7 +42,10 @@ export function useCreateCoverLetter() {
 export function useDeleteCoverLetter() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/cover-letters/${id}`),
+    mutationFn: async (id: string) => {
+      const res = await api.delete(`/cover-letters/${id}`);
+      if (!res.success) throw new Error(res.error.message);
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: CL_KEY }),
   });
 }
@@ -47,8 +53,11 @@ export function useDeleteCoverLetter() {
 export function useAddCoverLetterItem(coverLetterId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateCoverLetterItemInput) =>
-      api.post(`/cover-letters/${coverLetterId}/items`, data),
+    mutationFn: async (data: CreateCoverLetterItemInput) => {
+      const res = await api.post(`/cover-letters/${coverLetterId}/items`, data);
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: [...CL_KEY, coverLetterId] }),
   });
 }
@@ -56,7 +65,11 @@ export function useAddCoverLetterItem(coverLetterId: string) {
 export function useRequestMatching(coverLetterId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => api.post(`/cover-letters/${coverLetterId}/matching`, {}),
+    mutationFn: async () => {
+      const res = await api.post(`/cover-letters/${coverLetterId}/matching`, {});
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: [...CL_KEY, coverLetterId] }),
   });
 }

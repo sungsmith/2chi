@@ -30,8 +30,11 @@ export function useExperience(id: string) {
 export function useCreateExperience() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateExperienceInput) =>
-      api.post<ExperienceDto>('/experiences', data),
+    mutationFn: async (data: CreateExperienceInput) => {
+      const res = await api.post<ExperienceDto>('/experiences', data);
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: EXP_KEY }),
   });
 }
@@ -39,8 +42,11 @@ export function useCreateExperience() {
 export function useUpdateExperience(id: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: UpdateExperienceInput) =>
-      api.patch<ExperienceDto>(`/experiences/${id}`, data),
+    mutationFn: async (data: UpdateExperienceInput) => {
+      const res = await api.patch<ExperienceDto>(`/experiences/${id}`, data);
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: EXP_KEY }),
   });
 }
@@ -48,7 +54,10 @@ export function useUpdateExperience(id: string) {
 export function useDeleteExperience() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/experiences/${id}`),
+    mutationFn: async (id: string) => {
+      const res = await api.delete(`/experiences/${id}`);
+      if (!res.success) throw new Error(res.error.message);
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: EXP_KEY }),
   });
 }

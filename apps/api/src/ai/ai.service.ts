@@ -51,6 +51,15 @@ export class AiService {
     }
   }
 
+  async streamChatCompletion(prompt: string) {
+    return this.openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      stream: true as const,
+      temperature: 0.7,
+    });
+  }
+
   async calculateMatchingScore(
     requiredCompetencies: string[],
     experiences: Array<{

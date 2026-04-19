@@ -9,6 +9,11 @@ export const COMPANY_QUEUE = 'company';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
+function isCacheValid(analyzedAt: Date | null): boolean {
+  if (!analyzedAt) return false;
+  return Date.now() - new Date(analyzedAt).getTime() < CACHE_TTL_MS;
+}
+
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -36,10 +41,7 @@ export class CompaniesService {
       where: { userId, name: dto.name },
     });
 
-    if (existing?.analyzedAt) {
-      const age = Date.now() - new Date(existing.analyzedAt).getTime();
-      if (age < CACHE_TTL_MS) return { cached: true, company: existing };
-    }
+    if (isCacheValid(existing?.analyzedAt ?? null)) return { cached: true, company: existing };
 
     const job = await this.companyQueue.add(
       'analyze',
@@ -55,10 +57,7 @@ export class CompaniesService {
       where: { userId, name: dto.name },
     });
 
-    if (existing?.analyzedAt) {
-      const age = Date.now() - new Date(existing.analyzedAt).getTime();
-      if (age < CACHE_TTL_MS) return existing;
-    }
+    if (isCacheValid(existing?.analyzedAt ?? null)) return existing;
 
     const analysis = await this.aiService.analyzeCompany(
       dto.name,

@@ -10,8 +10,6 @@ import { ExperiencesService } from '../experiences/experiences.service';
 import { CreateCoverLetterDto } from './dto/create-cover-letter.dto';
 import { CreateCoverLetterItemDto } from './dto/create-cover-letter-item.dto';
 import { buildDraftPrompt } from '../ai/prompts/cover-letter.prompt';
-import { ConfigService } from '@nestjs/config';
-import OpenAI from 'openai';
 
 export const COVER_LETTER_QUEUE = 'cover-letter';
 
@@ -21,19 +19,12 @@ const INCLUDE_ITEMS = {
 
 @Injectable()
 export class CoverLettersService {
-  private readonly openai: OpenAI;
-
   constructor(
     private prisma: PrismaService,
     private aiService: AiService,
     private experiencesService: ExperiencesService,
-    private configService: ConfigService,
     @InjectQueue(COVER_LETTER_QUEUE) private coverLetterQueue: Queue,
-  ) {
-    this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
-    });
-  }
+  ) {}
 
   async findAll(userId: string) {
     return this.prisma.coverLetter.findMany({
@@ -111,29 +102,26 @@ export class CoverLettersService {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    const stream = await this.openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'user', content: prompt }],
-      stream: true,
-      temperature: 0.7,
-    });
-
-    let fullText = '';
-    for await (const chunk of stream) {
-      const delta = chunk.choices[0]?.delta?.content ?? '';
-      if (delta) {
-        fullText += delta;
-        res.write(`data: ${JSON.stringify({ delta })}\n\n`);
+    try {
+      const stream = await this.aiService.streamChatCompletion(prompt);
+      let fullText = '';
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content ?? '';
+        if (delta) {
+          fullText += delta;
+          res.write(`data: ${JSON.stringify({ delta })}\n\n`);
+        }
       }
+      await this.prisma.coverLetterItem.update({
+        where: { id: itemId },
+        data: { aiDraft: fullText },
+      });
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    } catch {
+      res.write(`data: ${JSON.stringify({ error: true, message: '생성 중 오류가 발생했습니다.' })}\n\n`);
+    } finally {
+      res.end();
     }
-
-    await this.prisma.coverLetterItem.update({
-      where: { id: itemId },
-      data: { aiDraft: fullText },
-    });
-
-    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
-    res.end();
   }
 
   async enqueueMatching(coverLetterId: string, userId: string) {
@@ -147,8 +135,12 @@ export class CoverLettersService {
   }
 
   async calculateMatching(coverLetterId: string, userId: string) {
-    const coverLetter = await this.findOne(coverLetterId, userId);
-    const requiredCompetencies = (coverLetter as any).jobPosting?.requiredCompetencies ?? [];
+    await this.findOne(coverLetterId, userId);
+    const coverLetter = await this.prisma.coverLetter.findUnique({
+      where: { id: coverLetterId },
+      include: { jobPosting: true },
+    });
+    const requiredCompetencies = (coverLetter?.jobPosting?.requiredCompetencies ?? []) as string[];
 
     if (!requiredCompetencies.length) {
       return { score: 0, matchedKeywords: [], missingKeywords: [], summary: '채용공고 역량 정보가 없습니다.' };

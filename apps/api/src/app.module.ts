@@ -17,9 +17,11 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     ConfigModule.forRoot({ isGlobal: true }),
     BullModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        redis: config.get<string>('REDIS_URL') || 'redis://localhost:6379',
-      }),
+      useFactory: (config: ConfigService) => {
+        const redisUrl = config.get<string>('REDIS_URL');
+        if (!redisUrl) throw new Error('REDIS_URL environment variable is required');
+        return { redis: redisUrl };
+      },
     }),
     PrismaModule,
     AuthModule,
