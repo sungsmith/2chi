@@ -40,7 +40,7 @@
       "status": "completed",
       "started_at": "2026-04-19T17:46:59+09:00",
       "summary": "ApplicationCard, AddApplicationModal, ApplicationBoard 3개 컴포넌트 구현 완료 — @2chi/shared 타입 공유, lint 통과",
-      "completed_at": "2026-04-19T17:47:30+09:00"
+      "completed_at": "2026-04-19T17:48:00+09:00"
     },
     {
       "step": 5,
