@@ -7,7 +7,8 @@
       "name": "shared-company-types",
       "status": "completed",
       "started_at": "2026-04-19T18:18:05+09:00",
-      "summary": "packages/shared에 CompanyDto, MatchingScoreDto 타입(types/company.ts)과 createCompanySchema, analyzeCompanySchema Zod 스키마(schemas/company.schema.ts) 추가 및 index.ts re-export"
+      "summary": "packages/shared에 CompanyDto, MatchingScoreDto 타입(types/company.ts)과 createCompanySchema, analyzeCompanySchema Zod 스키마(schemas/company.schema.ts) 추가 및 index.ts re-export",
+      "completed_at": "2026-04-19T18:19:04+09:00"
     },
     {
       "step": 1,
