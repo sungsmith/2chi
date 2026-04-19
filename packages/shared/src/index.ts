@@ -5,3 +5,7 @@ export * from './types/application';
 export * from './schemas/application.schema';
 export * from './types/company';
 export * from './schemas/company.schema';
+export * from './types/experience';
+export * from './schemas/experience.schema';
+export * from './types/cover-letter';
+export * from './schemas/cover-letter.schema';
