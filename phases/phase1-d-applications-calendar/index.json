@@ -7,7 +7,8 @@
       "name": "shared-application-types",
       "status": "completed",
       "started_at": "2026-04-19T10:19:32+09:00",
-      "summary": "packages/shared에 ApplicationDto, CalendarEventDto 타입과 createApplicationSchema, addStageSchema, createCalendarEventSchema Zod 스키마 추가 및 index.ts re-export 완료"
+      "summary": "packages/shared에 ApplicationDto, CalendarEventDto 타입과 createApplicationSchema, addStageSchema, createCalendarEventSchema Zod 스키마 추가 및 index.ts re-export 완료",
+      "completed_at": "2026-04-19T10:20:15+09:00"
     },
     {
       "step": 1,
