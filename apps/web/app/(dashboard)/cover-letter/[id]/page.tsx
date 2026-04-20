@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Plus, ArrowLeft, Loader2, X } from 'lucide-react';
+import { Plus, ArrowLeft, Loader2, X, CheckSquare, Square, ChevronDown, ChevronUp } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useCoverLetter, useAddCoverLetterItem } from '@/hooks/use-cover-letters';
+import { useExperiences } from '@/hooks/use-experiences';
 import { createCoverLetterItemSchema, type CreateCoverLetterItemInput, type CoverLetterItemDto } from '@2chi/shared';
+import type { ExperienceDto } from '@2chi/shared';
 import { api } from '@/lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -26,6 +28,21 @@ function getAccessToken(): string | null {
   } catch {
     return null;
   }
+}
+
+interface RecommendResult {
+  experienceId: string;
+  score: number;
+  reason: string;
+}
+
+async function fetchRecommendations(coverLetterId: string, itemId: string): Promise<RecommendResult[]> {
+  const res = await api.post<RecommendResult[]>(
+    `/cover-letters/${coverLetterId}/items/${itemId}/recommend`,
+    {},
+  );
+  if (!res.success) throw new Error(res.error.message);
+  return res.data;
 }
 
 // ─── Add Item Modal ─────────────────────────────────────────────────
@@ -107,6 +124,297 @@ function AddItemModal({ coverLetterId, itemCount, onClose }: AddItemModalProps) 
   );
 }
 
+// ─── Experience Card for recommendation ─────────────────────────────
+
+const EXPERIENCE_TYPE_LABEL: Record<string, string> = {
+  WORK: '업무',
+  PROJECT: '프로젝트',
+  ACTIVITY: '활동',
+  EDUCATION: '교육',
+};
+
+interface ExperienceSelectCardProps {
+  experience: ExperienceDto;
+  recommendation?: RecommendResult;
+  selected: boolean;
+  onToggle: () => void;
+}
+
+function ExperienceSelectCard({ experience, recommendation, selected, onToggle }: ExperienceSelectCardProps) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`w-full text-left rounded-lg border p-4 transition-colors ${
+        selected
+          ? 'border-blue-500 bg-blue-50'
+          : 'border-slate-200 bg-white hover:border-slate-300'
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 shrink-0 text-blue-500">
+          {selected ? (
+            <CheckSquare className="w-4 h-4" />
+          ) : (
+            <Square className="w-4 h-4 text-slate-300" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium text-slate-900 truncate">{experience.title}</span>
+            <Badge variant="outline" className="text-xs shrink-0">
+              {EXPERIENCE_TYPE_LABEL[experience.type] ?? experience.type}
+            </Badge>
+            {recommendation && (
+              <span className="text-xs font-medium text-blue-600 shrink-0">
+                점수 {recommendation.score}
+              </span>
+            )}
+          </div>
+          {recommendation && (
+            <p className="text-xs text-slate-500 mt-1 line-clamp-2">{recommendation.reason}</p>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ─── AI Draft Flow ───────────────────────────────────────────────────
+
+type DraftStep = 'idle' | 'recommending' | 'selecting' | 'streaming';
+
+interface AiDraftFlowProps {
+  coverLetterId: string;
+  item: CoverLetterItemDto;
+  aiDraft: string;
+  setAiDraft: (v: string) => void;
+  isStreaming: boolean;
+  setIsStreaming: (v: boolean) => void;
+}
+
+function AiDraftFlow({
+  coverLetterId,
+  item,
+  aiDraft,
+  setAiDraft,
+  isStreaming,
+  setIsStreaming,
+}: AiDraftFlowProps) {
+  const { data: experiences } = useExperiences();
+  const [step, setStep] = useState<DraftStep>('idle');
+  const [recommendations, setRecommendations] = useState<RecommendResult[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState(false);
+
+  const recommendedIds = new Set(recommendations.map((r) => r.experienceId));
+
+  const displayedExperiences = (() => {
+    if (!experiences) return [];
+    if (showAll) return experiences;
+    const recommended = experiences.filter((e) => recommendedIds.has(e.id));
+    return recommended;
+  })();
+
+  const handleRecommend = async () => {
+    setStep('recommending');
+    setSelectedIds([]);
+    setShowAll(false);
+    try {
+      const results = await fetchRecommendations(coverLetterId, item.id);
+      const sorted = [...results].sort((a, b) => b.score - a.score);
+      setRecommendations(sorted);
+      setStep('selecting');
+    } catch {
+      setStep('idle');
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const handleGenerateDraft = async () => {
+    if (selectedIds.length === 0) return;
+    setStep('streaming');
+    setIsStreaming(true);
+    setAiDraft('');
+    try {
+      const token = getAccessToken();
+      const res = await fetch(
+        `${API_BASE}/cover-letters/${coverLetterId}/items/${item.id}/draft`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ experienceIds: selectedIds }),
+        },
+      );
+
+      if (!res.ok || !res.body) {
+        setIsStreaming(false);
+        setStep('idle');
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data:')) continue;
+          const jsonStr = trimmed.slice(5).trim();
+          try {
+            const parsed = JSON.parse(jsonStr);
+            if (parsed.error) {
+              setIsStreaming(false);
+              setStep('idle');
+              return;
+            }
+            if (parsed.done) {
+              setIsStreaming(false);
+              setStep('idle');
+              return;
+            }
+            if (parsed.delta) {
+              accumulated += parsed.delta;
+              setAiDraft(accumulated);
+            }
+          } catch {
+            // 파싱 실패한 청크 무시
+          }
+        }
+      }
+    } catch {
+      // 에러 무시
+    } finally {
+      setIsStreaming(false);
+      setStep('idle');
+    }
+  };
+
+  // Step 0: idle — show "AI 경험 추천받기" button
+  if (step === 'idle') {
+    return (
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        onClick={handleRecommend}
+        className="h-7 text-xs"
+      >
+        AI 경험 추천받기
+      </Button>
+    );
+  }
+
+  // Step 1: recommending — loading state
+  if (step === 'recommending') {
+    return (
+      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <Loader2 className="w-3 h-3 animate-spin" />
+        질문을 분석하고 적합한 경험을 찾는 중...
+      </div>
+    );
+  }
+
+  // Step 2: selecting — show recommended experiences
+  if (step === 'selecting') {
+    const nonRecommended = experiences?.filter((e) => !recommendedIds.has(e.id)) ?? [];
+
+    return (
+      <div className="space-y-3">
+        <div className="space-y-2">
+          {displayedExperiences.map((exp) => {
+            const rec = recommendations.find((r) => r.experienceId === exp.id);
+            return (
+              <ExperienceSelectCard
+                key={exp.id}
+                experience={exp}
+                recommendation={rec}
+                selected={selectedIds.includes(exp.id)}
+                onToggle={() => toggleSelect(exp.id)}
+              />
+            );
+          })}
+          {showAll &&
+            nonRecommended.map((exp) => (
+              <ExperienceSelectCard
+                key={exp.id}
+                experience={exp}
+                recommendation={undefined}
+                selected={selectedIds.includes(exp.id)}
+                onToggle={() => toggleSelect(exp.id)}
+              />
+            ))}
+        </div>
+
+        {!showAll && nonRecommended.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowAll(true)}
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 transition-colors"
+          >
+            <ChevronDown className="w-3.5 h-3.5" />
+            전체 경험 보기 ({nonRecommended.length}개 더)
+          </button>
+        )}
+        {showAll && (
+          <button
+            type="button"
+            onClick={() => setShowAll(false)}
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 transition-colors"
+          >
+            <ChevronUp className="w-3.5 h-3.5" />
+            추천 경험만 보기
+          </button>
+        )}
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleGenerateDraft}
+            disabled={selectedIds.length === 0}
+            className="h-7 text-xs"
+          >
+            선택한 경험으로 초안 생성 ({selectedIds.length}개)
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => setStep('idle')}
+            className="h-7 text-xs"
+          >
+            취소
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 3: streaming
+  return (
+    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+      <Loader2 className="w-3 h-3 animate-spin" />
+      생성 중...
+    </div>
+  );
+}
+
 // ─── Cover Letter Item Card ─────────────────────────────────────────
 
 interface ItemCardProps {
@@ -139,67 +447,6 @@ function ItemCard({ coverLetterId, item }: ItemCardProps) {
     setUserContent(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => saveContent(value), 1000);
-  };
-
-  const handleGenerateDraft = async () => {
-    setIsStreaming(true);
-    setAiDraft('');
-    try {
-      const token = getAccessToken();
-      const res = await fetch(
-        `${API_BASE}/cover-letters/${coverLetterId}/items/${item.id}/draft`,
-        {
-          method: 'POST',
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        },
-      );
-
-      if (!res.ok || !res.body) {
-        setIsStreaming(false);
-        return;
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulated = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed || !trimmed.startsWith('data:')) continue;
-          const jsonStr = trimmed.slice(5).trim();
-          try {
-            const parsed = JSON.parse(jsonStr);
-            if (parsed.error) {
-              setIsStreaming(false);
-              return;
-            }
-            if (parsed.done) {
-              setIsStreaming(false);
-              return;
-            }
-            if (parsed.delta) {
-              accumulated += parsed.delta;
-              setAiDraft(accumulated);
-            }
-          } catch {
-            // 파싱 실패한 청크 무시
-          }
-        }
-      }
-    } catch {
-      // 에러 무시
-    } finally {
-      setIsStreaming(false);
-    }
   };
 
   return (
@@ -245,29 +492,20 @@ function ItemCard({ coverLetterId, item }: ItemCardProps) {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label>AI 초안</Label>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={handleGenerateDraft}
-            disabled={isStreaming}
-            className="h-7 text-xs"
-          >
-            {isStreaming ? (
-              <>
-                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                생성 중...
-              </>
-            ) : (
-              'AI 초안 생성'
-            )}
-          </Button>
+          <AiDraftFlow
+            coverLetterId={coverLetterId}
+            item={item}
+            aiDraft={aiDraft}
+            setAiDraft={setAiDraft}
+            isStreaming={isStreaming}
+            setIsStreaming={setIsStreaming}
+          />
         </div>
         <Textarea
           rows={5}
           value={aiDraft}
           readOnly
-          placeholder="AI 초안 생성 버튼을 눌러 초안을 생성하세요"
+          placeholder="AI 경험 추천받기 버튼을 눌러 초안을 생성하세요"
           className="resize-none bg-slate-50 text-slate-700"
         />
       </div>

@@ -5,7 +5,7 @@ import { CompanyCard } from '@/components/company/company-card';
 import { AnalyzeForm } from '@/components/company/analyze-form';
 
 export default function CompanyListPage() {
-  const { data: companies, isLoading, refetch } = useCompanies();
+  const { data: companies, isLoading } = useCompanies();
 
   return (
     <div className="max-w-5xl">
@@ -16,7 +16,7 @@ export default function CompanyListPage() {
 
       <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm mb-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">새 기업 분석</h2>
-        <AnalyzeForm onQueued={() => refetch()} />
+        <AnalyzeForm />
       </div>
 
       {isLoading && <div className="text-sm text-slate-500">불러오는 중...</div>}

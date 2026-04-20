@@ -21,7 +21,7 @@ export class CompaniesController {
 
   @Post('analyze')
   async analyze(@Body() dto: AnalyzeCompanyDto, @CurrentUser() user: JwtPayload) {
-    const data = await this.companiesService.enqueueAnalysis(user.sub, dto);
+    const data = await this.companiesService.analyzeAndUpsert(user.sub, dto);
     return { success: true, data };
   }
 }

@@ -14,6 +14,7 @@ export function buildDraftPrompt(
   experiences: ExperienceSummary[],
   jobTitle?: string,
   companyName?: string,
+  companyInfo?: { summary?: string; keyCompetencies?: string[] },
 ): string {
   const limitGuide = charLimit ? `글자 수 제한: ${charLimit}자 이내` : '글자 수 제한 없음';
   const target = [companyName, jobTitle].filter(Boolean).join(' ');
@@ -29,11 +30,16 @@ export function buildDraftPrompt(
     )
     .join('\n\n');
 
+  const companySection =
+    companyInfo
+      ? `\n## 기업 정보 (참고)\n${companyInfo.summary || ''}\n핵심 역량: ${(companyInfo.keyCompetencies ?? []).join(', ') || '-'}\n`
+      : '';
+
   return `당신은 취업 자소서 전문 작가입니다. 아래 지원자의 이력을 바탕으로 자소서 항목의 초안을 작성하세요.
 
 ${target ? `지원 대상: ${target}` : ''}
 ${limitGuide}
-
+${companySection}
 ## 지원자 이력
 ${expText || '이력 정보 없음'}
 

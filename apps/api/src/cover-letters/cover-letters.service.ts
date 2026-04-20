@@ -71,7 +71,38 @@ export class CoverLettersService {
     });
   }
 
-  async streamDraft(coverLetterId: string, itemId: string, userId: string, res: Response) {
+  async recommendExperiences(coverLetterId: string, itemId: string, userId: string) {
+    await this.findOne(coverLetterId, userId);
+
+    const item = await this.prisma.coverLetterItem.findUnique({ where: { id: itemId } });
+    if (!item || item.coverLetterId !== coverLetterId) {
+      throw new NotFoundException('자소서 항목을 찾을 수 없습니다.');
+    }
+
+    const experiences = await this.experiencesService.findAll(userId);
+    if (!experiences.length) return [];
+
+    const expSummaries = experiences.map((e) => ({
+      id: e.id,
+      title: e.title,
+      type: e.type as string,
+      situation: e.situation,
+      task: e.task,
+      action: e.action,
+      result: e.result,
+      tags: e.tags.map((t) => t.tag.name),
+    }));
+
+    return this.aiService.rankExperiences(item.question, expSummaries);
+  }
+
+  async streamDraft(
+    coverLetterId: string,
+    itemId: string,
+    userId: string,
+    res: Response,
+    experienceIds?: string[],
+  ) {
     const coverLetter = await this.findOne(coverLetterId, userId);
 
     const item = await this.prisma.coverLetterItem.findUnique({ where: { id: itemId } });
@@ -80,7 +111,11 @@ export class CoverLettersService {
     }
     if (!item.question) throw new BadRequestException('질문이 없는 항목입니다.');
 
-    const experiences = await this.experiencesService.findAll(userId);
+    const allExperiences = await this.experiencesService.findAll(userId);
+    const experiences = experienceIds?.length
+      ? allExperiences.filter((e) => experienceIds.includes(e.id))
+      : allExperiences;
+
     const expSummaries = experiences.map((e) => ({
       title: e.title,
       type: e.type,
@@ -91,11 +126,26 @@ export class CoverLettersService {
       tags: e.tags.map((t) => t.tag.name),
     }));
 
+    let companyInfo: { summary?: string; keyCompetencies?: string[] } | null = null;
+    if (coverLetter.companyId) {
+      const company = await this.prisma.company.findUnique({
+        where: { id: coverLetter.companyId },
+      });
+      if (company?.officialInfo) {
+        companyInfo = {
+          summary: (company.officialInfo as Record<string, string>).summary,
+          keyCompetencies: company.keyCompetencies as string[],
+        };
+      }
+    }
+
     const prompt = buildDraftPrompt(
       item.question,
       item.charLimit,
       expSummaries,
       coverLetter.jobPosting?.title,
+      undefined,
+      companyInfo ?? undefined,
     );
 
     res.setHeader('Content-Type', 'text/event-stream');

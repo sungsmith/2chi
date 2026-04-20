@@ -11,15 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useAnalyzeCompany, useCompanies } from '@/hooks/use-companies';
 import { analyzeCompanySchema, type AnalyzeCompanyInput, type CompanyDto } from '@2chi/shared';
 
-type AnalyzeApiResponse =
-  | { cached: true; company: CompanyDto }
-  | { cached: false; jobId: string };
-
-interface Props {
-  onQueued?: () => void;
-}
-
-export function AnalyzeForm({ onQueued }: Props) {
+export function AnalyzeForm() {
   const router = useRouter();
   const analyze = useAnalyzeCompany();
   const { data: allCompanies } = useCompanies();
@@ -29,7 +21,6 @@ export function AnalyzeForm({ onQueued }: Props) {
   const [suggestions, setSuggestions] = useState<CompanyDto[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedFromList, setSelectedFromList] = useState(false);
-  const [queuedMessage, setQueuedMessage] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -83,22 +74,13 @@ export function AnalyzeForm({ onQueued }: Props) {
     setNameInput(value);
     setValue('name', value);
     setSelectedFromList(false);
-    setQueuedMessage('');
   };
 
   const onSubmit = async (data: AnalyzeCompanyInput) => {
-    setQueuedMessage('');
     const res = await analyze.mutateAsync(data);
     if (!res.success) return;
-
-    const payload = res.data as unknown as AnalyzeApiResponse;
-
-    if (payload.cached && payload.company?.id) {
-      router.push(`/company/${payload.company.id}`);
-    } else {
-      setQueuedMessage(data.name);
-      onQueued?.();
-    }
+    const company = res.data as unknown as CompanyDto;
+    router.push(`/company/${company.id}`);
   };
 
   return (
@@ -167,11 +149,6 @@ export function AnalyzeForm({ onQueued }: Props) {
         </div>
         {analyze.data && !analyze.data.success && (
           <p className="text-xs text-red-500">{analyze.data.error.message}</p>
-        )}
-        {queuedMessage && (
-          <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-700">
-            <span>"{queuedMessage}" 분석이 시작됐습니다. 완료 후 아래 목록에 자동으로 추가됩니다.</span>
-          </div>
         )}
         <Button type="submit" disabled={analyze.isPending}>
           {analyze.isPending ? 'AI 분석 중...' : '기업 분석 시작'}

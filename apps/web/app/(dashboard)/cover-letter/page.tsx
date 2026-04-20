@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCoverLetters, useCreateCoverLetter, useDeleteCoverLetter } from '@/hooks/use-cover-letters';
+import { useCompanies } from '@/hooks/use-companies';
 import { createCoverLetterSchema, type CreateCoverLetterInput, type CoverLetterDto } from '@2chi/shared';
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
@@ -26,6 +27,7 @@ interface AddCoverLetterModalProps {
 
 function AddCoverLetterModal({ onClose }: AddCoverLetterModalProps) {
   const create = useCreateCoverLetter();
+  const { data: companies } = useCompanies();
 
   const {
     register,
@@ -60,6 +62,19 @@ function AddCoverLetterModal({ onClose }: AddCoverLetterModalProps) {
               {...register('title')}
             />
             {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="companyId">연결 기업 (선택)</Label>
+            <select
+              id="companyId"
+              className="w-full h-9 rounded-md border border-slate-200 bg-white px-3 text-sm"
+              {...register('companyId')}
+            >
+              <option value="">선택 안 함</option>
+              {companies?.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="submit" disabled={create.isPending} className="flex-1">

@@ -46,14 +46,25 @@ export class CoverLettersController {
     return { success: true, data };
   }
 
+  @Post(':id/items/:itemId/recommend')
+  async recommendExperiences(
+    @Param('id') id: string,
+    @Param('itemId') itemId: string,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const data = await this.coverLettersService.recommendExperiences(id, itemId, user.sub);
+    return { success: true, data };
+  }
+
   @Post(':id/items/:itemId/draft')
   async streamDraft(
     @Param('id') id: string,
     @Param('itemId') itemId: string,
+    @Body() body: { experienceIds?: string[] },
     @CurrentUser() user: JwtPayload,
     @Res() res: Response,
   ) {
-    await this.coverLettersService.streamDraft(id, itemId, user.sub, res);
+    await this.coverLettersService.streamDraft(id, itemId, user.sub, res, body.experienceIds);
   }
 
   @Post(':id/matching')
