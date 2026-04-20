@@ -1,8 +1,12 @@
-import type { ExperienceDto } from '@2chi/shared';
-
-type ExperienceSummary = Pick<ExperienceDto, 'title' | 'type' | 'situation' | 'task' | 'action' | 'result'> & {
+interface ExperienceSummary {
+  title: string;
+  type: string;
+  situation?: string | null;
+  task?: string | null;
+  action?: string | null;
+  result?: string | null;
   tags: string[];
-};
+}
 
 export function buildDraftPrompt(
   question: string,
