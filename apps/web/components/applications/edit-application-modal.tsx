@@ -7,38 +7,58 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useCreateApplication } from '@/hooks/use-applications';
+import { useUpdateApplication } from '@/hooks/use-applications';
+import type { ApplicationDto } from '@2chi/shared';
 
-const addApplicationFormSchema = z.object({
+const editApplicationFormSchema = z.object({
   companyName: z.string().min(1, '회사명을 입력하세요.').max(100),
+  currentStage: z.enum([
+    'DOCUMENT',
+    'FIRST_INTERVIEW',
+    'SECOND_INTERVIEW',
+    'FINAL_INTERVIEW',
+    'OFFER',
+    'DONE',
+  ]),
   appliedAt: z.string().optional(),
-  currentStage: z
-    .enum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'FINAL_INTERVIEW', 'OFFER', 'DONE'])
-    .default('DOCUMENT'),
+  deadline: z.string().optional(),
 });
 
-type AddApplicationFormValues = z.infer<typeof addApplicationFormSchema>;
+type EditApplicationFormValues = z.infer<typeof editApplicationFormSchema>;
 
 interface Props {
+  application: ApplicationDto;
   onClose: () => void;
 }
 
-export function AddApplicationModal({ onClose }: Props) {
-  const create = useCreateApplication();
+export function EditApplicationModal({ application, onClose }: Props) {
+  const update = useUpdateApplication(application.id);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AddApplicationFormValues>({
-    resolver: zodResolver(addApplicationFormSchema),
-    defaultValues: { currentStage: 'DOCUMENT' },
+  } = useForm<EditApplicationFormValues>({
+    resolver: zodResolver(editApplicationFormSchema),
+    defaultValues: {
+      companyName:
+        application.company?.name ??
+        application.memo ??
+        '',
+      currentStage: application.currentStage,
+      appliedAt: application.appliedAt
+        ? new Date(application.appliedAt).toISOString().split('T')[0]
+        : undefined,
+      deadline: application.jobPosting?.deadline
+        ? new Date(application.jobPosting.deadline).toISOString().split('T')[0]
+        : undefined,
+    },
   });
 
-  const onSubmit = async (data: AddApplicationFormValues) => {
-    const res = await create.mutateAsync({
-      appliedAt: data.appliedAt,
+  const onSubmit = async (data: EditApplicationFormValues) => {
+    const res = await update.mutateAsync({
       currentStage: data.currentStage,
+      appliedAt: data.appliedAt,
       memo: data.companyName,
     });
     if (res.success) onClose();
@@ -48,7 +68,7 @@ export function AddApplicationModal({ onClose }: Props) {
     <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-lg border border-slate-200 w-full max-w-md shadow-sm">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">지원 추가</h2>
+          <h2 className="text-lg font-semibold text-slate-900">지원 수정</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
             <X className="w-5 h-5" />
           </button>
@@ -62,10 +82,6 @@ export function AddApplicationModal({ onClose }: Props) {
             {errors.companyName && (
               <p className="text-xs text-red-500">{errors.companyName.message}</p>
             )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="appliedAt">지원일 (선택)</Label>
-            <Input id="appliedAt" type="date" {...register('appliedAt')} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="currentStage">현재 단계</Label>
@@ -82,9 +98,13 @@ export function AddApplicationModal({ onClose }: Props) {
               <option value="DONE">완료</option>
             </select>
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="appliedAt">지원일 (선택)</Label>
+            <Input id="appliedAt" type="date" {...register('appliedAt')} />
+          </div>
           <div className="flex gap-3 pt-2">
-            <Button type="submit" disabled={create.isPending} className="flex-1">
-              {create.isPending ? '추가 중...' : '추가'}
+            <Button type="submit" disabled={update.isPending} className="flex-1">
+              {update.isPending ? '저장 중...' : '저장'}
             </Button>
             <Button type="button" variant="outline" onClick={onClose}>
               취소

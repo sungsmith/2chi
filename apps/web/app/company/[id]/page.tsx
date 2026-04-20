@@ -80,7 +80,7 @@ export default function CompanyDetailPage() {
           <RefreshCw className="w-4 h-4" />
           재분석
         </h2>
-        <AnalyzeForm onAnalyzed={() => refetch()} />
+        <AnalyzeForm onQueued={() => refetch()} />
       </div>
     </div>
   );
