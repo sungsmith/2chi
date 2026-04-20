@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { PrismaService } from '../prisma/prisma.service';
@@ -64,6 +64,13 @@ export class CompaniesService {
       dto.jobTitle,
       dto.additionalContext,
     );
+
+    if ('error' in analysis) {
+      if (analysis.error === 'invalid_company') {
+        throw new BadRequestException('유효한 기업명을 입력해주세요.');
+      }
+      throw new Error(analysis.message);
+    }
 
     if (existing) {
       return this.prisma.company.update({

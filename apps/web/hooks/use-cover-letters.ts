@@ -46,7 +46,10 @@ export function useDeleteCoverLetter() {
       const res = await api.delete(`/cover-letters/${id}`);
       if (!res.success) throw new Error(res.error.message);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: CL_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CL_KEY });
+      qc.refetchQueries({ queryKey: CL_KEY });
+    },
   });
 }
 

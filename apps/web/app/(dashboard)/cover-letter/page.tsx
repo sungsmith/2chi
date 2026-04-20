@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Trash2, FileText } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -82,7 +83,7 @@ interface CoverLetterCardProps {
 
 function CoverLetterCard({ coverLetter }: CoverLetterCardProps) {
   const delete_ = useDeleteCoverLetter();
-  const [showComingSoon, setShowComingSoon] = useState(false);
+  const router = useRouter();
   const statusConfig = STATUS_CONFIG[coverLetter.status] ?? STATUS_CONFIG.DRAFT;
 
   return (
@@ -90,7 +91,7 @@ function CoverLetterCard({ coverLetter }: CoverLetterCardProps) {
       <div className="flex items-start justify-between gap-3">
         <button
           className="flex-1 min-w-0 text-left"
-          onClick={() => setShowComingSoon(true)}
+          onClick={() => router.push(`/cover-letter/${coverLetter.id}`)}
         >
           <div className="flex items-center gap-2 flex-wrap">
             <FileText className="w-4 h-4 text-slate-400 shrink-0" />
@@ -114,7 +115,8 @@ function CoverLetterCard({ coverLetter }: CoverLetterCardProps) {
           </div>
         </button>
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             if (confirm('이 자소서를 삭제할까요?')) delete_.mutate(coverLetter.id);
           }}
           className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-red-500 p-1 shrink-0"
@@ -123,18 +125,6 @@ function CoverLetterCard({ coverLetter }: CoverLetterCardProps) {
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
-
-      {showComingSoon && (
-        <div className="mt-3 p-3 bg-slate-50 rounded-md text-sm text-slate-500 border border-slate-200">
-          자소서 상세 편집 기능은 준비 중입니다.
-          <button
-            onClick={() => setShowComingSoon(false)}
-            className="ml-2 text-xs text-slate-400 hover:text-slate-600 underline"
-          >
-            닫기
-          </button>
-        </div>
-      )}
     </div>
   );
 }

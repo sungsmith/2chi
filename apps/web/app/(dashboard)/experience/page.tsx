@@ -240,6 +240,11 @@ function ExperienceFormModal({
 
 // ─── Experience Card ────────────────────────────────────────────────
 
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) return '';
+  return iso.slice(0, 10);
+}
+
 interface ExperienceCardProps {
   experience: ExperienceDto;
   onEdit: (exp: ExperienceDto) => void;
@@ -249,8 +254,8 @@ function ExperienceCard({ experience, onEdit }: ExperienceCardProps) {
   const delete_ = useDeleteExperience();
 
   const formatPeriod = () => {
-    const start = experience.startDate ?? '';
-    const end = experience.isCurrent ? '현재' : (experience.endDate ?? '');
+    const start = formatDate(experience.startDate);
+    const end = experience.isCurrent ? '현재' : formatDate(experience.endDate);
     if (!start && !end) return null;
     return `${start} ~ ${end}`;
   };
@@ -383,8 +388,8 @@ export default function ExperiencePage() {
             title: modal.experience.title,
             type: modal.experience.type,
             companyName: modal.experience.companyName ?? undefined,
-            startDate: modal.experience.startDate ?? undefined,
-            endDate: modal.experience.endDate ?? undefined,
+            startDate: modal.experience.startDate?.slice(0, 10) ?? undefined,
+            endDate: modal.experience.endDate?.slice(0, 10) ?? undefined,
             isCurrent: modal.experience.isCurrent,
             situation: modal.experience.situation ?? undefined,
             task: modal.experience.task ?? undefined,

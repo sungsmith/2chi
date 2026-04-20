@@ -3,24 +3,22 @@ export function buildCompanyAnalysisPrompt(
   jobTitle?: string,
   additionalContext?: string,
 ): string {
-  return `당신은 취업 정보 분석가입니다. 아래 기업과 직무에 대해 분석하세요.
+  return `당신은 취업 컨설턴트입니다. 구직자가 ${companyName}에 지원하기 위한 심층 기업 분석을 JSON으로 작성하세요.
+${jobTitle ? `\n지원 직무: ${jobTitle}` : ''}
+${additionalContext ? `\n추가 정보:\n${additionalContext}` : ''}
 
-기업명: ${companyName}
-${jobTitle ? `지원 직무: ${jobTitle}` : ''}
-${additionalContext ? `추가 정보:\n${additionalContext}` : ''}
-
-다음 JSON 형식으로 반환하세요:
+다음 JSON 스키마를 정확히 따르세요:
 {
-  "summary": "기업 한 줄 요약 (사업 모델, 규모, 특징)",
-  "products": ["주요 제품/서비스1", "주요 제품/서비스2"],
-  "recentNews": ["최근 이슈/동향1", "최근 이슈/동향2"],
-  "keyCompetencies": ["필요 역량1", "필요 역량2", "필요 역량3", "필요 역량4", "필요 역량5"],
-  "culture": "기업 문화 한 줄 설명 (없으면 null)"
+  "summary": "200자 이상의 회사 소개 (설립연도, 주요 사업, 시장 위치 포함)",
+  "products": ["주요 제품/서비스 5개 이상 (구체적인 이름과 설명 포함)"],
+  "recentNews": ["최근 1~2년 주요 동향 5개 이상 (성장, 인수, 출시 등)"],
+  "keyCompetencies": ["이 기업이 인재에게 요구하는 핵심 역량 7개 이상 (구체적)"],
+  "culture": "조직 문화 설명 (일하는 방식, 가치관, 복지 등 100자 이상)"
 }
 
-주의사항:
-- 한국어로 작성
-- keyCompetencies는 이 기업·직무에서 실제로 중요시하는 역량을 5~8개
-- 확실하지 않은 정보는 포함하지 말 것
-- 학습 데이터 기준으로 알고 있는 정보만 사용`;
+⚠️ 중요 규칙:
+- 기업명이 실존하는 기업이 아닌 것 같다면(의미없는 글자, 초성, 랜덤 문자열 등) 반드시 아래처럼 응답:
+{"error": "invalid_company", "message": "유효한 기업명을 입력해주세요."}
+- 절대 허구의 내용을 사실인 것처럼 작성하지 마세요
+- JSON 외의 텍스트 출력 금지`;
 }

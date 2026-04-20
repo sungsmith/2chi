@@ -14,7 +14,49 @@ function getAccessToken(): string | null {
   }
 }
 
-async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+function getRefreshToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const stored = localStorage.getItem('2chi-auth');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    return parsed?.state?.refreshToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function tryRefreshToken(): Promise<string | null> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return null;
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success) return null;
+
+    const { useAuthStore } = await import('@/store/auth.store');
+    useAuthStore.getState().setAuth(
+      data.data.accessToken,
+      data.data.refreshToken,
+      data.data.user,
+    );
+    return data.data.accessToken;
+  } catch {
+    return null;
+  }
+}
+
+async function apiRequest<T>(
+  path: string,
+  options: RequestInit = {},
+  isRetry = false,
+): Promise<ApiResponse<T>> {
   const token = getAccessToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -23,6 +65,18 @@ async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<A
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  if (response.status === 401 && !isRetry && !path.startsWith('/auth/')) {
+    const newToken = await tryRefreshToken();
+    if (newToken) {
+      return apiRequest<T>(path, options, true);
+    }
+    const { useAuthStore } = await import('@/store/auth.store');
+    useAuthStore.getState().logout();
+    window.location.href = '/login';
+    return { success: false, error: { code: 'UNAUTHORIZED', message: '세션이 만료되었습니다.' } } as ApiResponse<T>;
+  }
+
   return response.json();
 }
 
