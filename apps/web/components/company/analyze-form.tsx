@@ -96,9 +96,7 @@ export function AnalyzeForm({ onQueued }: Props) {
     if (payload.cached && payload.company?.id) {
       router.push(`/company/${payload.company.id}`);
     } else {
-      setQueuedMessage(
-        `"${data.name}" 분석을 시작했습니다. 잠시 후 목록에서 확인하세요.`,
-      );
+      setQueuedMessage(data.name);
       onQueued?.();
     }
   };
@@ -171,8 +169,16 @@ export function AnalyzeForm({ onQueued }: Props) {
           <p className="text-xs text-red-500">{analyze.data.error.message}</p>
         )}
         {queuedMessage && (
-          <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-700">
-            {queuedMessage}
+          <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-700 flex items-center justify-between gap-4">
+            <span>"{queuedMessage}" 분석을 시작했습니다.</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/company')}
+            >
+              결과 보기
+            </Button>
           </div>
         )}
         <Button type="submit" disabled={analyze.isPending}>
