@@ -169,16 +169,8 @@ export function AnalyzeForm({ onQueued }: Props) {
           <p className="text-xs text-red-500">{analyze.data.error.message}</p>
         )}
         {queuedMessage && (
-          <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-700 flex items-center justify-between gap-4">
-            <span>"{queuedMessage}" 분석을 시작했습니다.</span>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => router.push('/company')}
-            >
-              결과 보기
-            </Button>
+          <div className="p-3 bg-blue-50 rounded-md text-sm text-blue-700">
+            <span>"{queuedMessage}" 분석이 시작됐습니다. 완료 후 아래 목록에 자동으로 추가됩니다.</span>
           </div>
         )}
         <Button type="submit" disabled={analyze.isPending}>

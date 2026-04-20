@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -248,9 +249,10 @@ function formatDate(iso: string | null | undefined): string {
 interface ExperienceCardProps {
   experience: ExperienceDto;
   onEdit: (exp: ExperienceDto) => void;
+  onNavigate: (id: string) => void;
 }
 
-function ExperienceCard({ experience, onEdit }: ExperienceCardProps) {
+function ExperienceCard({ experience, onEdit, onNavigate }: ExperienceCardProps) {
   const delete_ = useDeleteExperience();
 
   const formatPeriod = () => {
@@ -263,7 +265,10 @@ function ExperienceCard({ experience, onEdit }: ExperienceCardProps) {
   const period = formatPeriod();
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm group">
+    <div
+      className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm group cursor-pointer hover:border-slate-300 transition-colors"
+      onClick={() => onNavigate(experience.id)}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -293,14 +298,15 @@ function ExperienceCard({ experience, onEdit }: ExperienceCardProps) {
         </div>
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           <button
-            onClick={() => onEdit(experience)}
+            onClick={(e) => { e.stopPropagation(); onEdit(experience); }}
             className="text-slate-400 hover:text-blue-500 p-1"
             aria-label="수정"
           >
             <Pencil className="w-4 h-4" />
           </button>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (confirm('이 이력을 삭제할까요?')) delete_.mutate(experience.id);
             }}
             className="text-slate-400 hover:text-red-500 p-1"
@@ -322,6 +328,7 @@ type ModalState =
   | { mode: 'edit'; experience: ExperienceDto };
 
 export default function ExperiencePage() {
+  const router = useRouter();
   const { data: experiences, isLoading } = useExperiences();
   const createExp = useCreateExperience();
   const [modal, setModal] = useState<ModalState>({ mode: 'closed' });
@@ -367,6 +374,7 @@ export default function ExperiencePage() {
             key={exp.id}
             experience={exp}
             onEdit={(e) => setModal({ mode: 'edit', experience: e })}
+            onNavigate={(id) => router.push(`/experience/${id}`)}
           />
         ))}
       </div>

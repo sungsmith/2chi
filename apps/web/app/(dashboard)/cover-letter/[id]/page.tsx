@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Plus, ArrowLeft, Loader2, X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,22 +32,24 @@ function getAccessToken(): string | null {
 
 interface AddItemModalProps {
   coverLetterId: string;
+  itemCount: number;
   onClose: () => void;
 }
 
-function AddItemModal({ coverLetterId, onClose }: AddItemModalProps) {
+function AddItemModal({ coverLetterId, itemCount, onClose }: AddItemModalProps) {
   const addItem = useAddCoverLetterItem(coverLetterId);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm<CreateCoverLetterItemInput>({
-    resolver: zodResolver(createCoverLetterItemSchema),
+  } = useForm<Omit<CreateCoverLetterItemInput, 'order'>>({
+    resolver: zodResolver(createCoverLetterItemSchema.omit({ order: true })),
   });
 
-  const onSubmit = async (data: CreateCoverLetterItemInput) => {
-    await addItem.mutateAsync(data);
+  const onSubmit = async (data: Omit<CreateCoverLetterItemInput, 'order'>) => {
+    await addItem.mutateAsync({ ...data, order: itemCount });
     onClose();
   };
 
@@ -77,11 +79,18 @@ function AddItemModal({ coverLetterId, onClose }: AddItemModalProps) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="charLimit">글자수 제한 (선택)</Label>
-            <Input
-              id="charLimit"
-              type="number"
-              placeholder="1000"
-              {...register('charLimit', { valueAsNumber: true })}
+            <Controller
+              name="charLimit"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="charLimit"
+                  type="number"
+                  placeholder="1000"
+                  value={field.value ?? ''}
+                  onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                />
+              )}
             />
           </div>
           <div className="flex gap-3 pt-2">
@@ -339,6 +348,7 @@ export default function CoverLetterDetailPage() {
       {showAddModal && (
         <AddItemModal
           coverLetterId={id}
+          itemCount={coverLetter.items?.length ?? 0}
           onClose={() => setShowAddModal(false)}
         />
       )}
