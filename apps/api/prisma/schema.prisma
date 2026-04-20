@@ -254,6 +254,7 @@ enum ApplicationStage {
   FINAL_INTERVIEW
   OFFER
   DONE
+  CUSTOM
 }
 
 enum ApplicationResult {
@@ -267,6 +268,7 @@ model ApplicationStageHistory {
   id            String             @id @default(cuid())
   applicationId String
   stage         ApplicationStage
+  customLabel   String?
   scheduledAt   DateTime?
   result        ApplicationResult?
   note          String?
