@@ -1,0 +1,13 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase2-b-job-posting-scrape",
+  "steps": [
+    { "step": 0, "name": "shared-job-posting-scrape-types", "status": "pending" },
+    { "step": 1, "name": "ai-prompts-scrape", "status": "pending" },
+    { "step": 2, "name": "job-postings-scrape-api", "status": "pending" },
+    { "step": 3, "name": "company-analysis-enhanced-api", "status": "pending" },
+    { "step": 4, "name": "job-posting-scrape-hooks", "status": "pending" },
+    { "step": 5, "name": "job-posting-scrape-ui", "status": "pending" },
+    { "step": 6, "name": "company-analysis-enhanced-ui", "status": "pending" }
+  ]
+}
