@@ -25,6 +25,18 @@
       "dir": "phase1-e-company-analysis",
       "status": "completed",
       "completed_at": "2026-04-19T18:35:48+09:00"
+    },
+    {
+      "dir": "phase2-a-career-desc",
+      "status": "pending"
+    },
+    {
+      "dir": "phase2-b-job-posting-scrape",
+      "status": "pending"
+    },
+    {
+      "dir": "phase2-c-onboarding-pdf",
+      "status": "pending"
     }
   ]
 }
