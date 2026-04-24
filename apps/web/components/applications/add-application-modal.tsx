@@ -13,7 +13,7 @@ const addApplicationFormSchema = z.object({
   companyName: z.string().min(1, '회사명을 입력하세요.').max(100),
   appliedAt: z.string().optional(),
   currentStage: z
-    .enum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'FINAL_INTERVIEW', 'OFFER', 'DONE'])
+    .enum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'OFFER', 'DONE', 'CUSTOM'])
     .default('DOCUMENT'),
 });
 
@@ -77,8 +77,8 @@ export function AddApplicationModal({ onClose }: Props) {
               <option value="DOCUMENT">서류</option>
               <option value="FIRST_INTERVIEW">1차 면접</option>
               <option value="SECOND_INTERVIEW">2차 면접</option>
-              <option value="FINAL_INTERVIEW">최종 면접</option>
               <option value="OFFER">오퍼</option>
+              <option value="CUSTOM">기타</option>
               <option value="DONE">완료</option>
             </select>
           </div>

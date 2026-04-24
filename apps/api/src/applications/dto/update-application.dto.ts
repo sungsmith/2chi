@@ -18,7 +18,7 @@ export class UpdateApplicationDto {
   appliedAt?: string;
 
   @IsOptional()
-  @IsEnum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'FINAL_INTERVIEW', 'OFFER', 'DONE'])
+  @IsEnum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'OFFER', 'DONE', 'CUSTOM'])
   currentStage?: string;
 
   @IsOptional()

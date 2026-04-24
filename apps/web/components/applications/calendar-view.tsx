@@ -6,18 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useCalendarEvents, useDeleteCalendarEvent } from '@/hooks/use-calendar';
 import { useApplications } from '@/hooks/use-applications';
 import { cn } from '@/lib/utils';
-
-const EVENT_TYPE_CONFIG = {
-  DEADLINE: { label: '마감', dotClass: 'bg-red-500' },
-  INTERVIEW: { label: '면접', dotClass: 'bg-blue-500' },
-  OTHER: { label: '기타', dotClass: 'bg-slate-400' },
-} as const;
-
-const EVENT_TYPE_BADGE = {
-  DEADLINE: 'bg-red-50 text-red-600',
-  INTERVIEW: 'bg-blue-50 text-blue-700',
-  OTHER: 'bg-slate-100 text-slate-600',
-} as const;
+import { STAGE_LABELS, STAGE_COLORS, type ApplicationStage } from '@2chi/shared';
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -27,7 +16,8 @@ interface CalendarEvent {
   id: string;
   title: string;
   date: string; // YYYY-MM-DD
-  eventType: 'DEADLINE' | 'INTERVIEW' | 'OTHER' | 'APPLICATION_DEADLINE';
+  eventType?: 'DEADLINE' | 'INTERVIEW' | 'OTHER';
+  stageType?: ApplicationStage | null;
   sourceId: string;
 }
 
@@ -79,13 +69,14 @@ export function CalendarView() {
   const allEvents: CalendarEvent[] = [];
 
   if (calendarEvents) {
-    for (const e of calendarEvents) {
+    for (const e of calendarEvents.filter((e) => e.applicationId === null)) {
       const dateStr = e.scheduledAt.slice(0, 10);
       allEvents.push({
         id: e.id,
         title: e.title,
         date: dateStr,
         eventType: e.eventType,
+        stageType: undefined,
         sourceId: e.id,
       });
     }
@@ -93,19 +84,41 @@ export function CalendarView() {
 
   if (applications) {
     for (const app of applications) {
-      const deadline = app.jobPosting?.deadline;
-      if (!deadline) continue;
-      const dateStr = deadline.slice(0, 10);
-      const [y, m] = dateStr.split('-').map(Number);
-      if (y === year && m === month) {
-        const companyName = app.company?.name ?? app.jobPosting?.title ?? '지원';
-        allEvents.push({
-          id: `app-${app.id}`,
-          title: `${companyName} 마감`,
-          date: dateStr,
-          eventType: 'APPLICATION_DEADLINE',
-          sourceId: app.id,
-        });
+      const companyName = app.company?.name ?? app.memo ?? '지원';
+
+      // 지원일 표시 (현재 단계 색상으로)
+      if (app.appliedAt) {
+        const dateStr = app.appliedAt.slice(0, 10);
+        const [y, m] = dateStr.split('-').map(Number);
+        if (y === year && m === month) {
+          allEvents.push({
+            id: `app-applied-${app.id}`,
+            title: companyName,
+            date: dateStr,
+            stageType: app.currentStage,
+            sourceId: app.id,
+          });
+        }
+      }
+
+      // 각 전형 단계의 scheduledAt 표시
+      for (const stage of app.stages) {
+        if (!stage.scheduledAt) continue;
+        const dateStr = stage.scheduledAt.slice(0, 10);
+        const [y, m] = dateStr.split('-').map(Number);
+        if (y === year && m === month) {
+          const stageName =
+            stage.stage === 'CUSTOM'
+              ? (stage.customLabel ?? '기타')
+              : STAGE_LABELS[stage.stage];
+          allEvents.push({
+            id: `stage-${stage.id}`,
+            title: `${companyName} ${stageName}`,
+            date: dateStr,
+            stageType: stage.stage,
+            sourceId: app.id,
+          });
+        }
       }
     }
   }
@@ -121,19 +134,25 @@ export function CalendarView() {
 
   const selectedEvents = selectedDate ? (eventsByDate[selectedDate] ?? []) : [];
 
-  function getDotClass(eventType: CalendarEvent['eventType']): string {
-    if (eventType === 'APPLICATION_DEADLINE') return 'bg-orange-500';
-    return EVENT_TYPE_CONFIG[eventType]?.dotClass ?? 'bg-slate-400';
+  function getDotClass(ev: CalendarEvent): string {
+    if (ev.stageType) return (STAGE_COLORS[ev.stageType] ?? STAGE_COLORS['CUSTOM']).dot;
+    if (ev.eventType === 'DEADLINE') return 'bg-red-500';
+    if (ev.eventType === 'INTERVIEW') return 'bg-blue-500';
+    return 'bg-slate-400';
   }
 
-  function getBadgeClass(eventType: CalendarEvent['eventType']): string {
-    if (eventType === 'APPLICATION_DEADLINE') return 'bg-orange-50 text-orange-600';
-    return EVENT_TYPE_BADGE[eventType] ?? 'bg-slate-100 text-slate-600';
+  function getBadgeClass(ev: CalendarEvent): string {
+    if (ev.stageType) return (STAGE_COLORS[ev.stageType] ?? STAGE_COLORS['CUSTOM']).badge;
+    if (ev.eventType === 'DEADLINE') return 'bg-red-50 text-red-600';
+    if (ev.eventType === 'INTERVIEW') return 'bg-blue-50 text-blue-700';
+    return 'bg-slate-100 text-slate-600';
   }
 
-  function getEventLabel(eventType: CalendarEvent['eventType']): string {
-    if (eventType === 'APPLICATION_DEADLINE') return '지원마감';
-    return EVENT_TYPE_CONFIG[eventType]?.label ?? '기타';
+  function getEventLabel(ev: CalendarEvent): string {
+    if (ev.stageType) return (STAGE_COLORS[ev.stageType] ?? STAGE_COLORS['CUSTOM']).label;
+    if (ev.eventType === 'DEADLINE') return '마감';
+    if (ev.eventType === 'INTERVIEW') return '면접';
+    return '기타';
   }
 
   return (
@@ -245,12 +264,12 @@ export function CalendarView() {
                         key={ev.id}
                         className={cn(
                           'flex items-center gap-1 px-1 py-0.5 rounded text-xs truncate',
-                          getBadgeClass(ev.eventType),
+                          getBadgeClass(ev),
                         )}
                         title={ev.title}
                       >
                         <span
-                          className={cn('w-1.5 h-1.5 rounded-full shrink-0', getDotClass(ev.eventType))}
+                          className={cn('w-1.5 h-1.5 rounded-full shrink-0', getDotClass(ev))}
                         />
                         <span className="truncate">{ev.title}</span>
                       </div>
@@ -283,14 +302,14 @@ export function CalendarView() {
                         <span
                           className={cn(
                             'rounded-full text-xs font-medium px-2 py-0.5',
-                            getBadgeClass(ev.eventType),
+                            getBadgeClass(ev),
                           )}
                         >
-                          {getEventLabel(ev.eventType)}
+                          {getEventLabel(ev)}
                         </span>
                         <span className="text-sm text-slate-800">{ev.title}</span>
                       </div>
-                      {!ev.id.startsWith('app-') && (
+                      {!ev.id.startsWith('stage-') && !ev.id.startsWith('app-applied-') && !ev.id.startsWith('app-deadline-') && (
                         <button
                           onClick={() => deleteEvent.mutate(ev.id)}
                           className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-red-500"
@@ -325,8 +344,8 @@ export function CalendarView() {
                   className="flex items-center justify-between bg-white rounded-lg border border-slate-200 px-4 py-3 shadow-sm group"
                 >
                   <div className="flex items-center gap-3">
-                    <span className={cn('rounded-full text-xs font-medium px-2.5 py-0.5', getBadgeClass(ev.eventType))}>
-                      {getEventLabel(ev.eventType)}
+                    <span className={cn('rounded-full text-xs font-medium px-2.5 py-0.5', getBadgeClass(ev))}>
+                      {getEventLabel(ev)}
                     </span>
                     <div>
                       <p className="text-sm font-medium text-slate-900">{ev.title}</p>
@@ -339,7 +358,7 @@ export function CalendarView() {
                       </p>
                     </div>
                   </div>
-                  {!ev.id.startsWith('app-') && (
+                  {!ev.id.startsWith('stage-') && !ev.id.startsWith('app-applied-') && !ev.id.startsWith('app-deadline-') && (
                     <button
                       onClick={() => deleteEvent.mutate(ev.id)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-red-500"

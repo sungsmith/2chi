@@ -7,7 +7,7 @@ const STAGE_COLUMNS: { key: ApplicationStage; label: string }[] = [
   { key: 'DOCUMENT', label: '서류' },
   { key: 'FIRST_INTERVIEW', label: '1차 면접' },
   { key: 'SECOND_INTERVIEW', label: '2차 면접' },
-  { key: 'FINAL_INTERVIEW', label: '최종 면접' },
+  { key: 'CUSTOM', label: '기타' },
   { key: 'OFFER', label: '오퍼' },
   { key: 'DONE', label: '완료' },
 ];

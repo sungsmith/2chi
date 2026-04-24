@@ -1,10 +1,9 @@
-import {
-  Controller, Get, Post, Patch, Delete, Body, Param, HttpCode, HttpStatus,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { AddStageDto } from './dto/add-stage.dto';
+import { UpdateStageDto } from './dto/update-stage.dto';
 import { CurrentUser, JwtPayload } from '../common/decorators/current-user.decorator';
 
 @Controller('applications')
@@ -14,6 +13,12 @@ export class ApplicationsController {
   @Get()
   async findAll(@CurrentUser() user: JwtPayload) {
     const data = await this.applicationsService.findAll(user.sub);
+    return { success: true, data };
+  }
+
+  @Get('stages/custom-labels')
+  async getCustomLabels(@CurrentUser() user: JwtPayload) {
+    const data = await this.applicationsService.getCustomLabels(user.sub);
     return { success: true, data };
   }
 
@@ -41,7 +46,6 @@ export class ApplicationsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
   async remove(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.applicationsService.remove(id, user.sub);
     return { success: true, data: null };
@@ -55,6 +59,17 @@ export class ApplicationsController {
     @CurrentUser() user: JwtPayload,
   ) {
     const data = await this.applicationsService.addStage(id, user.sub, dto);
+    return { success: true, data };
+  }
+
+  @Patch(':id/stages/:stageId')
+  async updateStage(
+    @Param('id') id: string,
+    @Param('stageId') stageId: string,
+    @Body() dto: UpdateStageDto,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const data = await this.applicationsService.updateStage(id, stageId, user.sub, dto);
     return { success: true, data };
   }
 }

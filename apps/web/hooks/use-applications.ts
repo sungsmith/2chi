@@ -3,8 +3,10 @@ import { api } from '@/lib/api';
 import type {
   ApplicationDto,
   ApplicationStageHistoryDto,
+  ApplicationResult,
   CreateApplicationInput,
   AddStageInput,
+  UpdateStageInput,
 } from '@2chi/shared';
 
 const APP_KEY = ['applications'] as const;
@@ -31,7 +33,7 @@ export function useCreateApplication() {
 export function useUpdateApplication(id: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<CreateApplicationInput> & { result?: string }) =>
+    mutationFn: (data: Partial<CreateApplicationInput> & { result?: ApplicationResult }) =>
       api.patch<ApplicationDto>(`/applications/${id}`, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: APP_KEY }),
   });
@@ -50,6 +52,26 @@ export function useAddStage(applicationId: string) {
   return useMutation({
     mutationFn: (data: AddStageInput) =>
       api.post<ApplicationStageHistoryDto>(`/applications/${applicationId}/stages`, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: APP_KEY }),
+  });
+}
+
+export function useCustomStageLabels() {
+  return useQuery({
+    queryKey: ['applications', 'stages', 'custom-labels'],
+    queryFn: async () => {
+      const res = await api.get<string[]>('/applications/stages/custom-labels');
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
+  });
+}
+
+export function useUpdateStage(applicationId: string, stageId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateStageInput) =>
+      api.patch<ApplicationStageHistoryDto>(`/applications/${applicationId}/stages/${stageId}`, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: APP_KEY }),
   });
 }

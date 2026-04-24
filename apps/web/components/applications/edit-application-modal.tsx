@@ -16,9 +16,9 @@ const editApplicationFormSchema = z.object({
     'DOCUMENT',
     'FIRST_INTERVIEW',
     'SECOND_INTERVIEW',
-    'FINAL_INTERVIEW',
     'OFFER',
     'DONE',
+    'CUSTOM',
   ]),
   appliedAt: z.string().optional(),
   deadline: z.string().optional(),
@@ -45,7 +45,7 @@ export function EditApplicationModal({ application, onClose }: Props) {
         application.company?.name ??
         application.memo ??
         '',
-      currentStage: application.currentStage,
+      currentStage: application.currentStage as EditApplicationFormValues['currentStage'],
       appliedAt: application.appliedAt
         ? new Date(application.appliedAt).toISOString().split('T')[0]
         : undefined,
@@ -93,8 +93,8 @@ export function EditApplicationModal({ application, onClose }: Props) {
               <option value="DOCUMENT">서류</option>
               <option value="FIRST_INTERVIEW">1차 면접</option>
               <option value="SECOND_INTERVIEW">2차 면접</option>
-              <option value="FINAL_INTERVIEW">최종 면접</option>
               <option value="OFFER">오퍼</option>
+              <option value="CUSTOM">기타</option>
               <option value="DONE">완료</option>
             </select>
           </div>

@@ -1,16 +1,22 @@
 import { IsEnum, IsOptional, IsDateString, IsString, MaxLength } from 'class-validator';
+import { ApplicationStage, ApplicationResult } from '@prisma/client';
 
 export class AddStageDto {
-  @IsEnum(['DOCUMENT', 'FIRST_INTERVIEW', 'SECOND_INTERVIEW', 'FINAL_INTERVIEW', 'OFFER', 'DONE'])
-  stage!: string;
+  @IsEnum(ApplicationStage)
+  stage!: ApplicationStage;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  customLabel?: string;
 
   @IsOptional()
   @IsDateString()
   scheduledAt?: string;
 
   @IsOptional()
-  @IsEnum(['PASS', 'FAIL', 'PENDING', 'WITHDRAWN'])
-  result?: string;
+  @IsEnum(ApplicationResult)
+  result?: ApplicationResult;
 
   @IsOptional()
   @IsString()
