@@ -3,6 +3,19 @@ import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import { buildCompanyAnalysisPrompt } from './prompts/company.prompt';
 import { buildMatchingPrompt } from './prompts/matching.prompt';
+import { buildCareerDescSectionDraftPrompt } from './prompts/career-description.prompt';
+
+interface StarExperience {
+  title: string;
+  type: string;
+  companyName?: string;
+  situation?: string;
+  task?: string;
+  action?: string;
+  result?: string;
+  resultMetric?: string;
+  tags?: string[];
+}
 
 @Injectable()
 export class AiService {
@@ -114,6 +127,19 @@ ${expText}
 
     const parsed = JSON.parse(content) as { rankings: Array<{ experienceId: string; score: number; reason: string }> };
     return (parsed.rankings ?? []).sort((a, b) => b.score - a.score);
+  }
+
+  async *streamCareerDescSectionDraft(
+    sectionType: string,
+    experiences: StarExperience[],
+    targetJobType?: string,
+  ): AsyncGenerator<string> {
+    const prompt = buildCareerDescSectionDraftPrompt(sectionType, experiences, targetJobType);
+    const stream = await this.streamChatCompletion(prompt);
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content ?? '';
+      if (delta) yield delta;
+    }
   }
 
   async calculateMatchingScore(
