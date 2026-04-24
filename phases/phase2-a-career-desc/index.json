@@ -45,7 +45,10 @@
     {
       "step": 5,
       "name": "career-desc-ui",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-24T19:49:21+09:00",
+      "summary": "경력기술서 목록/편집 페이지, SectionEditor, 사이드바 메뉴 추가 완료",
+      "completed_at": "2026-04-24T20:10:00+09:00"
     }
   ],
   "created_at": "2026-04-24T19:30:30+09:00"
