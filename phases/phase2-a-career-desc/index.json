@@ -24,7 +24,7 @@
       "status": "completed",
       "started_at": "2026-04-24T19:35:20+09:00",
       "summary": "career-description.prompt.ts 생성, AiService에 streamCareerDescSectionDraft() 추가",
-      "completed_at": "2026-04-24T19:50:00+09:00"
+      "completed_at": "2026-04-24T19:36:47+09:00"
     },
     {
       "step": 3,
