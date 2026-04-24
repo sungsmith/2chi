@@ -95,24 +95,25 @@ ${question}
 경험 목록:
 ${expText}
 
-JSON으로만 응답:
-[
+반드시 아래 JSON 형식으로만 응답하세요:
+{"rankings": [
   {"experienceId": "...", "score": 85, "reason": "팀 협업 경험이 직접적으로 적용 가능"},
   ...
-]
+]}
 모든 경험에 대해 점수를 매기되, score 내림차순으로 정렬하세요.`;
 
     const response = await this.openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
       temperature: 0.1,
     });
 
     const content = response.choices[0].message.content;
     if (!content) throw new Error('AI 응답이 없습니다.');
 
-    const parsed = JSON.parse(content) as Array<{ experienceId: string; score: number; reason: string }>;
-    return parsed.sort((a, b) => b.score - a.score);
+    const parsed = JSON.parse(content) as { rankings: Array<{ experienceId: string; score: number; reason: string }> };
+    return (parsed.rankings ?? []).sort((a, b) => b.score - a.score);
   }
 
   async calculateMatchingScore(
