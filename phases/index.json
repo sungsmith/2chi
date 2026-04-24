@@ -28,7 +28,8 @@
     },
     {
       "dir": "phase2-a-career-desc",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-24T19:54:01+09:00"
     },
     {
       "dir": "phase2-b-job-posting-scrape",
