@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Building2,
+  ClipboardList,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-auth';
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { href: '/', label: '대시보드', icon: LayoutDashboard },
   { href: '/experience', label: '내 이력', icon: Briefcase },
   { href: '/cover-letter', label: '자소서', icon: FileText },
+  { href: '/career-desc', label: '경력기술서', icon: ClipboardList },
   { href: '/company', label: '기업 분석', icon: Building2 },
   { href: '/applications', label: '지원 현황', icon: Calendar },
 ];
