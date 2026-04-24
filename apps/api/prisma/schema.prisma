@@ -1,0 +1,334 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  jobType     JobType  @default(NEW_GRAD)
+  targetField String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  experiences        Experience[]
+  coverLetters       CoverLetter[]
+  careerDescriptions CareerDescription[]
+  portfolios         Portfolio[]
+  applications       Application[]
+  interviewPreps     InterviewPrep[]
+  calendarEvents     CalendarEvent[]
+  resumeProfiles     ResumeProfile[]
+  companies          Company[]
+  jobPostings        JobPosting[]
+}
+
+enum JobType {
+  NEW_GRAD
+  MID_CAREER
+  EXPERIENCED
+}
+
+model Experience {
+  id           String         @id @default(cuid())
+  userId       String
+  title        String
+  type         ExperienceType
+  companyName  String?
+  startDate    DateTime?
+  endDate      DateTime?
+  isCurrent    Boolean        @default(false)
+  situation    String?        @db.Text
+  task         String?        @db.Text
+  action       String?        @db.Text
+  result       String?        @db.Text
+  resultMetric String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  user                User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags                ExperienceTag[]
+  coverLetterItemRefs CoverLetterItemExperience[]
+  careerDescSections  CareerDescriptionSection[]
+  portfolioSections   PortfolioSection[]
+  interviewAnswers    InterviewAnswer[]
+}
+
+enum ExperienceType {
+  WORK
+  PROJECT
+  ACTIVITY
+  EDUCATION
+}
+
+model Tag {
+  id          String          @id @default(cuid())
+  name        String          @unique
+  category    String?
+  experiences ExperienceTag[]
+}
+
+model ExperienceTag {
+  experienceId String
+  tagId        String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  tag          Tag        @relation(fields: [tagId], references: [id])
+
+  @@id([experienceId, tagId])
+}
+
+model Company {
+  id              String    @id @default(cuid())
+  userId          String
+  name            String
+  industry        String?
+  officialInfo    Json?
+  unofficialInfo  Json?
+  keyCompetencies String[]
+  analyzedAt      DateTime?
+  createdAt       DateTime  @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPostings  JobPosting[]
+  coverLetters CoverLetter[]
+  applications Application[]
+}
+
+model JobPosting {
+  id                    String    @id @default(cuid())
+  userId                String
+  companyId             String?
+  url                   String?
+  title                 String
+  department            String?
+  deadline              DateTime?
+  requiredCompetencies  String[]
+  preferredCompetencies String[]
+  requirements          String?   @db.Text
+  rawText               String?   @db.Text
+  parsedAt              DateTime?
+  createdAt             DateTime  @default(now())
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company        Company?        @relation(fields: [companyId], references: [id])
+  coverLetters   CoverLetter[]
+  applications   Application[]
+  interviewPreps InterviewPrep[]
+}
+
+model CoverLetter {
+  id            String            @id @default(cuid())
+  userId        String
+  jobPostingId  String?
+  companyId     String?
+  title         String
+  matchingScore Int?
+  status        CoverLetterStatus @default(DRAFT)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting   JobPosting?       @relation(fields: [jobPostingId], references: [id])
+  company      Company?          @relation(fields: [companyId], references: [id])
+  items        CoverLetterItem[]
+  applications Application[]
+}
+
+enum CoverLetterStatus {
+  DRAFT
+  EDITING
+  DONE
+}
+
+model CoverLetterItem {
+  id            String   @id @default(cuid())
+  coverLetterId String
+  question      String   @db.Text
+  order         Int
+  charLimit     Int?
+  aiDraft       String?  @db.Text
+  userContent   String?  @db.Text
+  feedback      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  coverLetter CoverLetter                @relation(fields: [coverLetterId], references: [id], onDelete: Cascade)
+  experiences CoverLetterItemExperience[]
+}
+
+model CoverLetterItemExperience {
+  coverLetterItemId String
+  experienceId      String
+  coverLetterItem   CoverLetterItem @relation(fields: [coverLetterItemId], references: [id], onDelete: Cascade)
+  experience        Experience      @relation(fields: [experienceId], references: [id])
+
+  @@id([coverLetterItemId, experienceId])
+}
+
+model CareerDescription {
+  id            String   @id @default(cuid())
+  userId        String
+  title         String
+  versionLabel  String?
+  targetJobType String?
+  pdfUrl        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user         User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections     CareerDescriptionSection[]
+  applications Application[]
+}
+
+model CareerDescriptionSection {
+  id                  String    @id @default(cuid())
+  careerDescriptionId String
+  experienceId        String?
+  sectionType         String
+  order               Int
+  content             Json
+
+  careerDescription CareerDescription @relation(fields: [careerDescriptionId], references: [id], onDelete: Cascade)
+  experience        Experience?        @relation(fields: [experienceId], references: [id])
+}
+
+model Portfolio {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String
+  templateId   String?
+  versionLabel String?
+  pdfUrl       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections PortfolioSection[]
+}
+
+model PortfolioSection {
+  id           String  @id @default(cuid())
+  portfolioId  String
+  experienceId String?
+  sectionType  String
+  order        Int
+  content      Json
+
+  portfolio  Portfolio   @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  experience Experience? @relation(fields: [experienceId], references: [id])
+}
+
+model Application {
+  id                  String             @id @default(cuid())
+  userId              String
+  jobPostingId        String?
+  companyId           String?
+  coverLetterId       String?
+  careerDescriptionId String?
+  appliedAt           DateTime?
+  currentStage        ApplicationStage   @default(DOCUMENT)
+  result              ApplicationResult?
+  memo                String?            @db.Text
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  user              User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting        JobPosting?               @relation(fields: [jobPostingId], references: [id])
+  company           Company?                  @relation(fields: [companyId], references: [id])
+  coverLetter       CoverLetter?              @relation(fields: [coverLetterId], references: [id])
+  careerDescription CareerDescription?        @relation(fields: [careerDescriptionId], references: [id])
+  stages            ApplicationStageHistory[]
+  calendarEvents    CalendarEvent[]
+}
+
+enum ApplicationStage {
+  DOCUMENT
+  FIRST_INTERVIEW
+  SECOND_INTERVIEW
+  FINAL_INTERVIEW
+  OFFER
+  DONE
+  CUSTOM
+}
+
+enum ApplicationResult {
+  PASS
+  FAIL
+  PENDING
+  WITHDRAWN
+}
+
+model ApplicationStageHistory {
+  id            String             @id @default(cuid())
+  applicationId String
+  stage         ApplicationStage
+  customLabel   String?
+  scheduledAt   DateTime?
+  result        ApplicationResult?
+  note          String?
+  createdAt     DateTime           @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+}
+
+model InterviewPrep {
+  id           String   @id @default(cuid())
+  userId       String
+  jobPostingId String?
+  createdAt    DateTime @default(now())
+
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPosting JobPosting?       @relation(fields: [jobPostingId], references: [id])
+  answers    InterviewAnswer[]
+}
+
+model InterviewAnswer {
+  id                    String   @id @default(cuid())
+  interviewPrepId       String
+  question              String   @db.Text
+  userAnswer            String?  @db.Text
+  aiFeedback            String?  @db.Text
+  suggestedExperienceId String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  interviewPrep       InterviewPrep @relation(fields: [interviewPrepId], references: [id], onDelete: Cascade)
+  suggestedExperience Experience?   @relation(fields: [suggestedExperienceId], references: [id])
+}
+
+model CalendarEvent {
+  id            String    @id @default(cuid())
+  userId        String
+  applicationId String?
+  title         String
+  eventType     EventType
+  scheduledAt   DateTime
+  reminderAt    DateTime?
+  isNotified    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application Application? @relation(fields: [applicationId], references: [id])
+}
+
+enum EventType {
+  DEADLINE
+  INTERVIEW
+  OTHER
+}
+
+model ResumeProfile {
+  id                    String   @id @default(cuid())
+  userId                String
+  name                  String
+  selectedExperienceIds String[]
+  createdAt             DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

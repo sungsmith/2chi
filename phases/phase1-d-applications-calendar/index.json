@@ -2,13 +2,71 @@
   "project": "이취 (2chi)",
   "phase": "phase1-d-applications-calendar",
   "steps": [
-    { "step": 0, "name": "shared-application-types", "status": "pending" },
-    { "step": 1, "name": "applications-api", "status": "pending" },
-    { "step": 2, "name": "calendar-api", "status": "pending" },
-    { "step": 3, "name": "applications-calendar-hooks", "status": "pending" },
-    { "step": 4, "name": "applications-board-ui", "status": "pending" },
-    { "step": 5, "name": "calendar-ui-main-page", "status": "pending" },
-    { "step": 6, "name": "dashboard-stats", "status": "pending" },
-    { "step": 7, "name": "phase1-final-validation", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-application-types",
+      "status": "completed",
+      "started_at": "2026-04-19T10:19:32+09:00",
+      "summary": "packages/shared에 ApplicationDto, CalendarEventDto 타입과 createApplicationSchema, addStageSchema, createCalendarEventSchema Zod 스키마 추가 및 index.ts re-export 완료",
+      "completed_at": "2026-04-19T10:20:15+09:00"
+    },
+    {
+      "step": 1,
+      "name": "applications-api",
+      "status": "completed",
+      "started_at": "2026-04-19T10:20:16+09:00",
+      "summary": "Applications CRUD (create/read/update/delete) + ApplicationStageHistory 추가 + 마감일/면접 단계 시 CalendarEvent 자동 생성 API 구현 (e2e 5/5 통과)",
+      "completed_at": "2026-04-19T10:23:31+09:00"
+    },
+    {
+      "step": 2,
+      "name": "calendar-api",
+      "status": "completed",
+      "started_at": "2026-04-19T10:23:31+09:00",
+      "summary": "Calendar CRUD 모듈 구현 완료 — GET /calendar(월별 조회), POST /calendar, PATCH /calendar/:id, DELETE /calendar/:id 엔드포인트 + ForbiddenException 소유권 검증 포함, lint 통과",
+      "completed_at": "2026-04-19T10:25:08+09:00"
+    },
+    {
+      "step": 3,
+      "name": "applications-calendar-hooks",
+      "status": "completed",
+      "started_at": "2026-04-19T10:25:08+09:00",
+      "summary": "use-applications.ts (useApplications, useCreateApplication, useUpdateApplication, useDeleteApplication, useAddStage) + use-calendar.ts (useCalendarEvents, useCreateCalendarEvent, useDeleteCalendarEvent) TanStack Query 훅 구현 완료, lint 통과",
+      "completed_at": "2026-04-19T10:25:56+09:00"
+    },
+    {
+      "step": 4,
+      "name": "applications-board-ui",
+      "status": "completed",
+      "started_at": "2026-04-19T17:46:59+09:00",
+      "summary": "ApplicationCard, AddApplicationModal, ApplicationBoard 3개 컴포넌트 구현 완료 — @2chi/shared 타입 공유, lint 통과",
+      "completed_at": "2026-04-19T17:48:00+09:00"
+    },
+    {
+      "step": 5,
+      "name": "calendar-ui-main-page",
+      "status": "completed",
+      "started_at": "2026-04-19T17:48:01+09:00",
+      "summary": "CalendarView 컴포넌트(월별 탐색 + 이벤트 목록 + 삭제)와 Applications 메인 페이지(보드/캘린더 탭 전환 + 지원 추가 모달) 구현 완료, lint 통과",
+      "completed_at": "2026-04-19T17:49:00+09:00"
+    },
+    {
+      "step": 6,
+      "name": "dashboard-stats",
+      "status": "completed",
+      "started_at": "2026-04-19T17:49:01+09:00",
+      "summary": "대시보드 페이지를 useExperiences/useCoverLetters/useApplications 훅으로 실제 데이터 연결 완료 — 스텁 훅 2개(use-experiences.ts, use-cover-letters.ts) 생성 포함, lint 통과",
+      "completed_at": "2026-04-19T17:50:26+09:00"
+    },
+    {
+      "step": 7,
+      "name": "phase1-final-validation",
+      "status": "completed",
+      "started_at": "2026-04-19T17:50:26+09:00",
+      "summary": "Phase 1-A(auth)+Phase 1-D(applications/calendar) e2e 12/12 통과, web lint 에러 없음. Phase 1-B(experience), Phase 1-C(cover-letter)는 미구현(pending) 상태로 향후 실행 필요.",
+      "completed_at": "2026-04-19T17:58:20+09:00"
+    }
+  ],
+  "created_at": "2026-04-19T10:19:32+09:00",
+  "completed_at": "2026-04-19T17:58:21+09:00"
 }

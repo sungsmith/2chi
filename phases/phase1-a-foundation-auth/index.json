@@ -2,15 +2,87 @@
   "project": "이취 (2chi)",
   "phase": "phase1-a-foundation-auth",
   "steps": [
-    { "step": 0, "name": "monorepo-root-setup", "status": "pending" },
-    { "step": 1, "name": "shared-package-setup", "status": "pending" },
-    { "step": 2, "name": "nestjs-api-scaffold", "status": "pending" },
-    { "step": 3, "name": "prisma-schema-migration", "status": "pending" },
-    { "step": 4, "name": "common-infrastructure", "status": "pending" },
-    { "step": 5, "name": "auth-module", "status": "pending" },
-    { "step": 6, "name": "nextjs-web-scaffold", "status": "pending" },
-    { "step": 7, "name": "api-client-auth-store", "status": "pending" },
-    { "step": 8, "name": "auth-ui", "status": "pending" },
-    { "step": 9, "name": "dashboard-layout-guard", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "monorepo-root-setup",
+      "status": "completed",
+      "started_at": "2026-04-18T22:07:08+09:00",
+      "completed_at": "2026-04-18T22:09:09+09:00",
+      "summary": "pnpm+Turborepo 모노레포 루트 세팅 완료 — package.json, pnpm-workspace.yaml, turbo.json, tsconfig.base.json, .env.example, .gitignore, docker-compose.yml 생성, 2chi-db/2chi-redis 컨테이너 healthy 확인"
+    },
+    {
+      "step": 1,
+      "name": "shared-package-setup",
+      "status": "completed",
+      "started_at": "2026-04-18T22:09:09+09:00",
+      "completed_at": "2026-04-18T22:10:46+09:00",
+      "summary": "@2chi/shared 패키지 세팅 완료 — ApiResponse/UserDto/AuthTokensDto 타입, registerSchema/loginSchema Zod 스키마 생성, tsc --noEmit 통과"
+    },
+    {
+      "step": 2,
+      "name": "nestjs-api-scaffold",
+      "status": "completed",
+      "started_at": "2026-04-18T22:10:46+09:00",
+      "completed_at": "2026-04-18T22:21:27+09:00",
+      "summary": "NestJS API 스캐폴딩 완료 — package.json, nest-cli.json, tsconfig.json(moduleResolution:node), PrismaService/Module(글로벌), main.ts(ValidationPipe+HttpExceptionFilter+CORS), app.module.ts(APP_GUARD:JwtAuthGuard), 공통 스텁(HttpExceptionFilter, JwtAuthGuard, AuthModule, UsersModule), 최소 schema.prisma 생성 후 prisma generate, tsc --noEmit 통과"
+    },
+    {
+      "step": 3,
+      "name": "prisma-schema-migration",
+      "status": "completed",
+      "started_at": "2026-04-18T22:21:28+09:00",
+      "completed_at": "2026-04-18T22:28:41+09:00",
+      "summary": "Phase 1 전체 도메인 Prisma 스키마 작성 완료 — User/Experience/Tag/Company/JobPosting/CoverLetter/CareerDescription/Portfolio/Application/InterviewPrep/CalendarEvent/ResumeProfile 등 19개 테이블, 마이그레이션 20260418132802_init 적용"
+    },
+    {
+      "step": 4,
+      "name": "common-infrastructure",
+      "status": "completed",
+      "started_at": "2026-04-18T22:28:41+09:00",
+      "completed_at": "2026-04-18T22:33:11+09:00",
+      "summary": "공통 인프라 구현 완료 — HttpExceptionFilter({ success: false, error: { code, message } } 포맷), JwtAuthGuard(AuthGuard('jwt') + Public 데코레이터 지원), CurrentUser/Public 데코레이터, e2e 테스트 환경(jest-e2e.json, common.e2e-spec.ts), tsconfig.build.json 분리, tsc --noEmit 통과"
+    },
+    {
+      "step": 5,
+      "name": "auth-module",
+      "status": "completed",
+      "started_at": "2026-04-18T22:33:11+09:00",
+      "completed_at": "2026-04-18T22:42:35+09:00",
+      "summary": "JWT 인증 모듈 구현 완료 — UsersService/Module, RegisterDto/LoginDto, JwtStrategy/JwtRefreshStrategy, AuthService(bcrypt 해싱 rounds:12), AuthController(register/login/refresh/logout), AuthModule, auth.e2e-spec.ts 7개 테스트 전체 통과, Docker DB 포트 5432→5433 충돌 해결"
+    },
+    {
+      "step": 6,
+      "name": "nextjs-web-scaffold",
+      "status": "completed",
+      "started_at": "2026-04-18T22:42:35+09:00",
+      "completed_at": "2026-04-18T22:51:35+09:00",
+      "summary": "Next.js 14 App Router 스캐폴딩 완료 — package.json, next.config.js, tailwind.config.ts(CSS 변수+shadcn 색상), tsconfig.json, vitest.config.ts, app/layout.tsx, app/globals.css(CSS 변수), lib/utils.ts(cn), components/providers.tsx(TanStack Query), components/ui/{button,input,label,textarea,badge,card}.tsx 생성, next build 통과"
+    },
+    {
+      "step": 7,
+      "name": "api-client-auth-store",
+      "status": "completed",
+      "started_at": "2026-04-18T22:51:35+09:00",
+      "completed_at": "2026-04-18T22:54:55+09:00",
+      "summary": "API 클라이언트·인증 스토어·훅 구현 완료 — lib/api.ts(localStorage 2chi-auth 키에서 토큰 자동 주입), store/auth.store.ts(Zustand persist, key='2chi-auth'), hooks/use-auth.ts(useLogin/useRegister/useLogout), @testing-library/jest-dom 설치, vitest 2 passed"
+    },
+    {
+      "step": 8,
+      "name": "auth-ui",
+      "status": "completed",
+      "started_at": "2026-04-18T22:54:55+09:00",
+      "completed_at": "2026-04-18T22:56:33+09:00",
+      "summary": "Auth UI 구현 완료 — app/(auth)/layout.tsx(중앙 정렬 레이아웃), login/page.tsx(React Hook Form+Zod, useLogin 훅), register/page.tsx(jobType select 포함), login/__tests__/page.test.tsx(3 passed)"
+    },
+    {
+      "step": 9,
+      "name": "dashboard-layout-guard",
+      "status": "completed",
+      "started_at": "2026-04-19T10:17:58+09:00",
+      "completed_at": "2026-04-19T10:18:58+09:00",
+      "summary": "대시보드 레이아웃·인증 가드 구현 완료 — middleware.ts(쿠키 기반 미인증→/login 리다이렉트), sidebar.tsx(네비게이션+로그아웃), (dashboard)/layout.tsx+page.tsx, use-auth.ts(쿠키 설정·삭제 추가), next build 통과"
+    }
+  ],
+  "created_at": "2026-04-18T16:08:15+09:00",
+  "completed_at": "2026-04-19T10:18:58+09:00"
 }

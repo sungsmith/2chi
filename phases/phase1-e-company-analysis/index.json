@@ -2,12 +2,63 @@
   "project": "이취 (2chi)",
   "phase": "phase1-e-company-analysis",
   "steps": [
-    { "step": 0, "name": "shared-company-types", "status": "pending" },
-    { "step": 1, "name": "ai-prompts-company-matching", "status": "pending" },
-    { "step": 2, "name": "companies-api", "status": "pending" },
-    { "step": 3, "name": "matching-endpoint", "status": "pending" },
-    { "step": 4, "name": "company-hooks", "status": "pending" },
-    { "step": 5, "name": "company-ui", "status": "pending" },
-    { "step": 6, "name": "plan-e-validation", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-company-types",
+      "status": "completed",
+      "started_at": "2026-04-19T18:18:05+09:00",
+      "summary": "packages/shared에 CompanyDto, MatchingScoreDto 타입(types/company.ts)과 createCompanySchema, analyzeCompanySchema Zod 스키마(schemas/company.schema.ts) 추가 및 index.ts re-export",
+      "completed_at": "2026-04-19T18:19:04+09:00"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-company-matching",
+      "status": "completed",
+      "started_at": "2026-04-19T18:19:04+09:00",
+      "summary": "apps/api/src/ai/prompts/company.prompt.ts, matching.prompt.ts 생성 및 ai.service.ts, ai.module.ts 추가 — analyzeCompany/calculateMatchingScore 메서드 모두 gpt-4o-mini 사용",
+      "completed_at": "2026-04-19T18:20:23+09:00"
+    },
+    {
+      "step": 2,
+      "name": "companies-api",
+      "status": "completed",
+      "started_at": "2026-04-19T18:20:23+09:00",
+      "summary": "apps/api/src/companies에 CompaniesModule(Controller/Service/DTOs) 구현 — GET /companies, GET /companies/:id, POST /companies/analyze 엔드포인트, 24h AI 분석 캐싱, app.module.ts 등록 완료",
+      "completed_at": "2026-04-19T18:22:56+09:00"
+    },
+    {
+      "step": 3,
+      "name": "matching-endpoint",
+      "status": "completed",
+      "started_at": "2026-04-19T18:22:57+09:00",
+      "summary": "CoverLettersModule(Controller/Service) + ExperiencesModule(Service) 생성 — GET /cover-letters/:id/matching 엔드포인트, ExperiencesService/AiService 주입, matchingScore DB 업데이트, app.module.ts 등록 완료",
+      "completed_at": "2026-04-19T18:25:11+09:00"
+    },
+    {
+      "step": 4,
+      "name": "company-hooks",
+      "status": "completed",
+      "started_at": "2026-04-19T18:25:12+09:00",
+      "summary": "apps/web/hooks/use-companies.ts 생성 — useCompanies/useCompany(Query) + useAnalyzeCompany/useMatchingScore(Mutation) 구현, @2chi/shared 타입(CompanyDto, MatchingScoreDto, AnalyzeCompanyInput) 사용, lint/tsc 통과",
+      "completed_at": "2026-04-19T18:26:23+09:00"
+    },
+    {
+      "step": 5,
+      "name": "company-ui",
+      "status": "completed",
+      "started_at": "2026-04-19T18:26:23+09:00",
+      "summary": "CompanyCard/AnalyzeForm/CompetencyList 컴포넌트, MatchingScoreBadge, /company 목록 페이지, /company/[id] 상세 페이지 생성 및 사이드바에 기업 분석 메뉴 추가 — lint/tsc 통과",
+      "completed_at": "2026-04-19T18:28:41+09:00"
+    },
+    {
+      "step": 6,
+      "name": "plan-e-validation",
+      "status": "completed",
+      "started_at": "2026-04-19T18:28:41+09:00",
+      "summary": "Phase 1-E 전체 검증 완료 — 코드 리뷰(industry 버그, AiService try/catch, as any 제거) 수정 후 전체 e2e 16개 통과, lint 통과",
+      "completed_at": "2026-04-19T18:35:48+09:00"
+    }
+  ],
+  "created_at": "2026-04-19T18:18:05+09:00",
+  "completed_at": "2026-04-19T18:35:48+09:00"
 }
