@@ -10,6 +10,7 @@ import { CalendarModule } from './calendar/calendar.module';
 import { CompaniesModule } from './companies/companies.module';
 import { CoverLettersModule } from './cover-letters/cover-letters.module';
 import { ExperiencesModule } from './experiences/experiences.module';
+import { FilesModule } from './files/files.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -31,6 +32,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     CompaniesModule,
     CoverLettersModule,
     ExperiencesModule,
+    FilesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
