@@ -2,11 +2,38 @@
   "project": "이취 (2chi)",
   "phase": "phase2-a-career-desc",
   "steps": [
-    { "step": 0, "name": "shared-career-desc-types", "status": "pending" },
-    { "step": 1, "name": "files-module", "status": "pending" },
-    { "step": 2, "name": "ai-prompts-career-desc", "status": "pending" },
-    { "step": 3, "name": "career-descriptions-api", "status": "pending" },
-    { "step": 4, "name": "career-desc-hooks", "status": "pending" },
-    { "step": 5, "name": "career-desc-ui", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-career-desc-types",
+      "status": "completed",
+      "started_at": "2026-04-24T19:30:30+09:00",
+      "summary": "packages/shared에 CareerDescriptionDto, SectionType, Zod 스키마 추가 완료"
+    },
+    {
+      "step": 1,
+      "name": "files-module",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "ai-prompts-career-desc",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "career-descriptions-api",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "career-desc-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "career-desc-ui",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-24T19:30:30+09:00"
 }
