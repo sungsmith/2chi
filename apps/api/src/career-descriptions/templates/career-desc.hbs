@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      font-size: 11px;
+      line-height: 1.7;
+      color: #0f172a;
+      background: #ffffff;
+      padding: 48px 56px;
+    }
+    .header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 36px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+    .meta {
+      font-size: 10px;
+      color: #64748b;
+    }
+    .section {
+      margin-bottom: 28px;
+      page-break-inside: avoid;
+    }
+    .section-heading {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      border-left: 3px solid #2563eb;
+      padding-left: 10px;
+      margin-bottom: 10px;
+    }
+    .section-body {
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      padding-left: 13px;
+    }
+    .empty-body {
+      color: #94a3b8;
+      font-style: italic;
+      padding-left: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">{{title}}</div>
+    <div class="meta">
+      {{#if versionLabel}}버전: {{versionLabel}}{{/if}}
+      {{#if targetJobType}}{{#if versionLabel}} · {{/if}}{{targetJobType}}{{/if}}
+    </div>
+  </div>
+
+  {{#each sections}}
+  <div class="section">
+    <div class="section-heading">{{this.content.heading}}</div>
+    {{#if this.content.body}}
+      <div class="section-body">{{this.content.body}}</div>
+    {{else}}
+      <div class="empty-body">(내용 없음)</div>
+    {{/if}}
+  </div>
+  {{/each}}
+</body>
+</html>
