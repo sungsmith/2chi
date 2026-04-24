@@ -7,7 +7,8 @@
       "name": "shared-career-desc-types",
       "status": "completed",
       "started_at": "2026-04-24T19:30:30+09:00",
-      "summary": "packages/shared에 CareerDescriptionDto, SectionType, Zod 스키마 추가 완료"
+      "summary": "packages/shared에 CareerDescriptionDto, SectionType, Zod 스키마 추가 완료",
+      "completed_at": "2026-04-24T19:31:26+09:00"
     },
     {
       "step": 1,
