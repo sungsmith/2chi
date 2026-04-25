@@ -1,9 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
+import * as cheerio from 'cheerio';
 import { buildCompanyAnalysisPrompt } from './prompts/company.prompt';
 import { buildMatchingPrompt } from './prompts/matching.prompt';
 import { buildCareerDescSectionDraftPrompt } from './prompts/career-description.prompt';
+import { buildScrapeParsePrompt, buildCompetencyGapPrompt } from './prompts/scrape.prompt';
+
+interface CompetencyGapDto {
+  required: string[];
+  preferred: string[];
+  myMatched: string[];
+  myMissing: string[];
+  score: number;
+  summary: string;
+}
 
 interface StarExperience {
   title: string;
@@ -139,6 +150,81 @@ ${expText}
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content ?? '';
       if (delta) yield delta;
+    }
+  }
+
+  private extractTextFromHtml(html: string): string {
+    const $ = cheerio.load(html);
+    $('script, style, nav, header, footer, aside').remove();
+    const text = $('body').text().replace(/\s+/g, ' ').trim();
+    return text.slice(0, 8000);
+  }
+
+  async parseJobPostingFromHtml(htmlText: string): Promise<{
+    title: string;
+    company: string;
+    requiredCompetencies: string[];
+    preferredCompetencies: string[];
+    deadline?: string;
+    rawText: string;
+  }> {
+    const rawText = this.extractTextFromHtml(htmlText);
+    const prompt = buildScrapeParsePrompt(rawText);
+
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.1,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      const parsed = JSON.parse(content) as {
+        title: string;
+        company: string;
+        requiredCompetencies: string[];
+        preferredCompetencies: string[];
+        deadline?: string | null;
+      };
+      return {
+        title: parsed.title ?? '',
+        company: parsed.company ?? '',
+        requiredCompetencies: parsed.requiredCompetencies ?? [],
+        preferredCompetencies: parsed.preferredCompetencies ?? [],
+        ...(parsed.deadline ? { deadline: parsed.deadline } : {}),
+        rawText,
+      };
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
+  }
+
+  async analyzeCompetencyGap(
+    requiredCompetencies: string[],
+    preferredCompetencies: string[],
+    myExperiences: Array<{ title: string; tags: string[]; situation?: string; action?: string }>,
+  ): Promise<CompetencyGapDto> {
+    const prompt = buildCompetencyGapPrompt(requiredCompetencies, preferredCompetencies, myExperiences);
+
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.1,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      return JSON.parse(content) as CompetencyGapDto;
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
     }
   }
 
