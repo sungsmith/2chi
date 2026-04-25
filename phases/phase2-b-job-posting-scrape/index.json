@@ -37,7 +37,10 @@
     {
       "step": 4,
       "name": "job-posting-scrape-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T13:56:32+09:00",
+      "summary": "use-job-postings.ts 생성(useJobPostings/useJobPosting/useScrapeJobPosting/useParseJobPosting/useDeleteJobPosting), use-companies.ts에 useCompetencyGapAnalysis mutation 추가 완료",
+      "completed_at": "2026-04-25T14:02:00+09:00"
     },
     {
       "step": 5,
