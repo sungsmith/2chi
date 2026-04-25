@@ -39,3 +39,12 @@ export interface JobPostingDto {
   requirements: string | null;
   createdAt: string;
 }
+
+export interface CompetencyGapDto {
+  required: string[];
+  preferred: string[];
+  myMatched: string[];
+  myMissing: string[];
+  score: number;
+  summary: string;
+}

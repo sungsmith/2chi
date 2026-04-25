@@ -2,12 +2,43 @@
   "project": "이취 (2chi)",
   "phase": "phase2-b-job-posting-scrape",
   "steps": [
-    { "step": 0, "name": "shared-job-posting-scrape-types", "status": "pending" },
-    { "step": 1, "name": "ai-prompts-scrape", "status": "pending" },
-    { "step": 2, "name": "job-postings-scrape-api", "status": "pending" },
-    { "step": 3, "name": "company-analysis-enhanced-api", "status": "pending" },
-    { "step": 4, "name": "job-posting-scrape-hooks", "status": "pending" },
-    { "step": 5, "name": "job-posting-scrape-ui", "status": "pending" },
-    { "step": 6, "name": "company-analysis-enhanced-ui", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-job-posting-scrape-types",
+      "status": "completed",
+      "started_at": "2026-04-25T13:46:57+09:00",
+      "summary": "scrapeJobPostingSchema, parseJobPostingSchema, CompetencyGapDto 추가 완료 — packages/shared 빌드 통과"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-scrape",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "job-postings-scrape-api",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "company-analysis-enhanced-api",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "job-posting-scrape-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "job-posting-scrape-ui",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "company-analysis-enhanced-ui",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-25T13:46:57+09:00"
 }
