@@ -16,7 +16,7 @@
       "status": "completed",
       "started_at": "2026-04-25T13:48:14+09:00",
       "summary": "scrape.prompt.ts 생성(buildScrapeParsePrompt, buildCompetencyGapPrompt), AiService에 parseJobPostingFromHtml, analyzeCompetencyGap, extractTextFromHtml(cheerio, 8000자 절단) 추가",
-      "completed_at": "2026-04-25T14:10:00+09:00"
+      "completed_at": "2026-04-25T13:50:14+09:00"
     },
     {
       "step": 2,
