@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import type { CompanyDto, MatchingScoreDto, AnalyzeCompanyInput } from '@2chi/shared';
+import type { CompanyDto, MatchingScoreDto, AnalyzeCompanyInput, CompetencyGapDto } from '@2chi/shared';
 
 const CO_KEY = ['companies'] as const;
 
@@ -40,5 +40,15 @@ export function useMatchingScore(coverLetterId: string) {
   return useMutation({
     mutationFn: () => api.get<MatchingScoreDto>(`/cover-letters/${coverLetterId}/matching`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['cover-letters', coverLetterId] }),
+  });
+}
+
+export function useCompetencyGapAnalysis() {
+  return useMutation({
+    mutationFn: async ({ companyId, jobPostingId }: { companyId: string; jobPostingId: string }) => {
+      const res = await api.post<CompetencyGapDto>(`/companies/${companyId}/gap-analysis`, { jobPostingId });
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
   });
 }
