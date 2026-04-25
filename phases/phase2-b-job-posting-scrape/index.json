@@ -48,7 +48,7 @@
       "status": "completed",
       "started_at": "2026-04-25T13:57:48+09:00",
       "summary": "ScrapeModal(URL→폴백→확인 2단계), JobPostingCard, 채용공고 목록 페이지, 사이드바 메뉴 추가 완료 — lint·build 통과",
-      "completed_at": "2026-04-25T14:10:00+09:00"
+      "completed_at": "2026-04-25T13:59:57+09:00"
     },
     {
       "step": 6,
