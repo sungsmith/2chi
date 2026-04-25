@@ -12,6 +12,7 @@ import { CoverLettersModule } from './cover-letters/cover-letters.module';
 import { ExperiencesModule } from './experiences/experiences.module';
 import { FilesModule } from './files/files.module';
 import { CareerDescriptionsModule } from './career-descriptions/career-descriptions.module';
+import { JobPostingsModule } from './job-postings/job-postings.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -35,6 +36,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     ExperiencesModule,
     FilesModule,
     CareerDescriptionsModule,
+    JobPostingsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
