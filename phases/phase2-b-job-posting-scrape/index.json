@@ -24,7 +24,7 @@
       "status": "completed",
       "started_at": "2026-04-25T13:50:14+09:00",
       "summary": "POST /job-postings/scrape 엔드포인트 추가 완료 — URL fetch(10초 타임아웃) → AI 파싱 → Company upsert → JobPosting 저장, job-postings 모듈 신규 생성(service/controller/module/dto)",
-      "completed_at": "2026-04-25T14:10:00+09:00"
+      "completed_at": "2026-04-25T13:53:43+09:00"
     },
     {
       "step": 3,
