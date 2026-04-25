@@ -33,7 +33,8 @@
     },
     {
       "dir": "phase2-b-job-posting-scrape",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-25T14:01:23+09:00"
     },
     {
       "dir": "phase2-c-onboarding-pdf",
