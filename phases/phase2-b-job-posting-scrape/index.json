@@ -7,7 +7,8 @@
       "name": "shared-job-posting-scrape-types",
       "status": "completed",
       "started_at": "2026-04-25T13:46:57+09:00",
-      "summary": "scrapeJobPostingSchema, parseJobPostingSchema, CompetencyGapDto 추가 완료 — packages/shared 빌드 통과"
+      "summary": "scrapeJobPostingSchema, parseJobPostingSchema, CompetencyGapDto 추가 완료 — packages/shared 빌드 통과",
+      "completed_at": "2026-04-25T13:48:14+09:00"
     },
     {
       "step": 1,
