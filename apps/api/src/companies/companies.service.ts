@@ -52,6 +52,33 @@ export class CompaniesService {
     return { cached: false, jobId: job.id };
   }
 
+  async analyzeGap(companyId: string, jobPostingId: string, userId: string) {
+    const company = await this.prisma.company.findUnique({ where: { id: companyId } });
+    if (!company) throw new NotFoundException('기업 정보를 찾을 수 없습니다.');
+
+    const jobPosting = await this.prisma.jobPosting.findUnique({ where: { id: jobPostingId } });
+    if (!jobPosting || jobPosting.userId !== userId) {
+      throw new NotFoundException('채용공고를 찾을 수 없습니다.');
+    }
+
+    const experiences = await this.prisma.experience.findMany({
+      where: { userId },
+      include: { tags: { include: { tag: true } } },
+    });
+
+    const required = [...new Set([...jobPosting.requiredCompetencies, ...company.keyCompetencies])];
+    const preferred = jobPosting.preferredCompetencies;
+
+    const myExperiences = experiences.map((e) => ({
+      title: e.title,
+      tags: e.tags.map((et) => et.tag.name),
+      situation: e.situation ?? undefined,
+      action: e.action ?? undefined,
+    }));
+
+    return this.aiService.analyzeCompetencyGap(required, preferred, myExperiences);
+  }
+
   async analyzeAndUpsert(userId: string, dto: AnalyzeCompanyDto) {
     const existing = await this.prisma.company.findFirst({
       where: { userId, name: dto.name },
