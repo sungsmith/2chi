@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-04-25T13:53:43+09:00",
       "summary": "POST /companies/:id/gap-analysis 엔드포인트 추가 완료 — GapAnalysisDto, analyzeGap() 서비스 메서드, 컨트롤러 엔드포인트 구현",
-      "completed_at": "2026-04-25T14:10:00+09:00"
+      "completed_at": "2026-04-25T13:56:32+09:00"
     },
     {
       "step": 4,
