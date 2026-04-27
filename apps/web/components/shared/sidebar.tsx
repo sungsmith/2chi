@@ -11,6 +11,7 @@ import {
   Building2,
   ClipboardList,
   Newspaper,
+  Upload,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-auth';
@@ -18,6 +19,7 @@ import { useLogout } from '@/hooks/use-auth';
 const NAV_ITEMS = [
   { href: '/', label: '대시보드', icon: LayoutDashboard },
   { href: '/experience', label: '내 이력', icon: Briefcase },
+  { href: '/onboarding', label: '이력서 가져오기', icon: Upload },
   { href: '/cover-letter', label: '자소서', icon: FileText },
   { href: '/career-desc', label: '경력기술서', icon: ClipboardList },
   { href: '/company', label: '기업 분석', icon: Building2 },
