@@ -27,3 +27,5 @@ __exportStar(require("./types/cover-letter"), exports);
 __exportStar(require("./schemas/cover-letter.schema"), exports);
 __exportStar(require("./types/career-description"), exports);
 __exportStar(require("./schemas/career-description.schema"), exports);
+__exportStar(require("./types/onboarding"), exports);
+__exportStar(require("./schemas/onboarding.schema"), exports);
