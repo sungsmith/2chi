@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "onboarding-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-27T18:57:21+09:00",
+      "summary": "use-onboarding.ts 생성 (useParseResume: fetch+FormData, useConfirmParsed: experiences 캐시 무효화)",
+      "completed_at": "2026-04-27T19:05:00+09:00"
     },
     {
       "step": 4,
