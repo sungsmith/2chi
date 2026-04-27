@@ -6,6 +6,21 @@ import { buildCompanyAnalysisPrompt } from './prompts/company.prompt';
 import { buildMatchingPrompt } from './prompts/matching.prompt';
 import { buildCareerDescSectionDraftPrompt } from './prompts/career-description.prompt';
 import { buildScrapeParsePrompt, buildCompetencyGapPrompt } from './prompts/scrape.prompt';
+import { buildResumeParsePrompt } from './prompts/resume-parse.prompt';
+
+interface ParsedExperience {
+  title: string;
+  type: 'WORK' | 'PROJECT' | 'ACTIVITY' | 'EDUCATION';
+  companyName?: string;
+  startDate?: string;
+  endDate?: string;
+  situation?: string;
+  task?: string;
+  action?: string;
+  result?: string;
+  resultMetric?: string;
+  tags?: string[];
+}
 
 interface CompetencyGapDto {
   required: string[];
@@ -220,6 +235,36 @@ ${expText}
       const content = response.choices[0].message.content;
       if (!content) throw new Error('AI 응답이 없습니다.');
       return JSON.parse(content) as CompetencyGapDto;
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
+  }
+
+  async parseResumeToExperiences(resumeText: string): Promise<{
+    experiences: ParsedExperience[];
+    confidence: number;
+  }> {
+    const prompt = buildResumeParsePrompt(resumeText);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.1,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      const parsed = JSON.parse(content) as {
+        experiences: ParsedExperience[];
+        overallConfidence: number;
+      };
+      return {
+        experiences: parsed.experiences ?? [],
+        confidence: parsed.overallConfidence ?? 0,
+      };
     } catch (err) {
       if (err instanceof SyntaxError) {
         throw new Error('AI 응답 파싱에 실패했습니다.');
