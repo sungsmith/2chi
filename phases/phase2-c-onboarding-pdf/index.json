@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "onboarding-api",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-27T18:52:13+09:00",
+      "summary": "OnboardingModule 구현 완료 — parse(PDF/DOCX → AI 구조화 → Cache), confirm(Experience 생성) 엔드포인트",
+      "completed_at": "2026-04-27T19:10:00+09:00"
     },
     {
       "step": 3,
