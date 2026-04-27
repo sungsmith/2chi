@@ -7,7 +7,8 @@
       "name": "shared-onboarding-types",
       "status": "completed",
       "started_at": "2026-04-27T18:48:32+09:00",
-      "summary": "ParsedExperience, OnboardingParseResultDto, confirmOnboardingSchema 추가 완료"
+      "summary": "ParsedExperience, OnboardingParseResultDto, confirmOnboardingSchema 추가 완료",
+      "completed_at": "2026-04-27T18:49:22+09:00"
     },
     {
       "step": 1,
