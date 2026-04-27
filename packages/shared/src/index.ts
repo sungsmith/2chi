@@ -11,3 +11,5 @@ export * from './types/cover-letter';
 export * from './schemas/cover-letter.schema';
 export * from './types/career-description';
 export * from './schemas/career-description.schema';
+export * from './types/onboarding';
+export * from './schemas/onboarding.schema';

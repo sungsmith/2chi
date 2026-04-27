@@ -2,10 +2,33 @@
   "project": "이취 (2chi)",
   "phase": "phase2-c-onboarding-pdf",
   "steps": [
-    { "step": 0, "name": "shared-onboarding-types", "status": "pending" },
-    { "step": 1, "name": "ai-prompts-resume-parse", "status": "pending" },
-    { "step": 2, "name": "onboarding-api", "status": "pending" },
-    { "step": 3, "name": "onboarding-hooks", "status": "pending" },
-    { "step": 4, "name": "onboarding-ui", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-onboarding-types",
+      "status": "completed",
+      "started_at": "2026-04-27T18:48:32+09:00",
+      "summary": "ParsedExperience, OnboardingParseResultDto, confirmOnboardingSchema 추가 완료"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-resume-parse",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "onboarding-api",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "onboarding-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "onboarding-ui",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-27T18:48:32+09:00"
 }
