@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "ai-prompts-resume-parse",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-27T18:49:22+09:00",
+      "summary": "resume-parse.prompt.ts 생성, AiService에 parseResumeToExperiences() 추가 (gpt-4o-mini, JSON 출력)",
+      "completed_at": "2026-04-27T19:05:00+09:00"
     },
     {
       "step": 2,
