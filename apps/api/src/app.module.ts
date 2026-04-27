@@ -13,6 +13,7 @@ import { ExperiencesModule } from './experiences/experiences.module';
 import { FilesModule } from './files/files.module';
 import { CareerDescriptionsModule } from './career-descriptions/career-descriptions.module';
 import { JobPostingsModule } from './job-postings/job-postings.module';
+import { OnboardingModule } from './onboarding/onboarding.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -37,6 +38,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     FilesModule,
     CareerDescriptionsModule,
     JobPostingsModule,
+    OnboardingModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
