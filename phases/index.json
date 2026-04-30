@@ -40,6 +40,10 @@
       "dir": "phase2-c-onboarding-pdf",
       "status": "completed",
       "completed_at": "2026-04-27T19:01:16+09:00"
-    }
+    },
+    { "dir": "phase3-a-portfolio", "status": "pending" },
+    { "dir": "phase3-b-interview-prep", "status": "pending" },
+    { "dir": "phase3-c-resume-profile", "status": "pending" },
+    { "dir": "phase3-d-analytics", "status": "pending" }
   ]
 }
