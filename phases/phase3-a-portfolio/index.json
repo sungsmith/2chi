@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "portfolio-api",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-30T11:45:12+09:00",
+      "summary": "portfolios NestJS 모듈 생성 — CRUD, 섹션 관리, AI SSE 스트리밍, PDF 생성 포함",
+      "completed_at": "2026-04-30T12:05:00+09:00"
     },
     {
       "step": 3,
