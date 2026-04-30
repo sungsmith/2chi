@@ -19,3 +19,4 @@ export * from './types/interview-prep';
 export * from './schemas/interview-prep.schema';
 export * from './types/resume-profile';
 export * from './schemas/resume-profile.schema';
+export * from './types/analytics';
