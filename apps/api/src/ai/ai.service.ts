@@ -5,6 +5,7 @@ import * as cheerio from 'cheerio';
 import { buildCompanyAnalysisPrompt } from './prompts/company.prompt';
 import { buildMatchingPrompt } from './prompts/matching.prompt';
 import { buildCareerDescSectionDraftPrompt } from './prompts/career-description.prompt';
+import { buildPortfolioSectionDraftPrompt } from './prompts/portfolio.prompt';
 import { buildScrapeParsePrompt, buildCompetencyGapPrompt } from './prompts/scrape.prompt';
 import { buildResumeParsePrompt } from './prompts/resume-parse.prompt';
 
@@ -161,6 +162,20 @@ ${expText}
     targetJobType?: string,
   ): AsyncGenerator<string> {
     const prompt = buildCareerDescSectionDraftPrompt(sectionType, experiences, targetJobType);
+    const stream = await this.streamChatCompletion(prompt);
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content ?? '';
+      if (delta) yield delta;
+    }
+  }
+
+  async *streamPortfolioSectionDraft(
+    sectionType: string,
+    sectionTitle: string,
+    experiences: Array<{ title: string; situation: string; task: string; action: string; result: string }>,
+    targetField?: string,
+  ): AsyncGenerator<string> {
+    const prompt = buildPortfolioSectionDraftPrompt(sectionType, sectionTitle, experiences, targetField);
     const stream = await this.streamChatCompletion(prompt);
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content ?? '';
