@@ -1,0 +1,10 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase3-d-analytics",
+  "steps": [
+    { "step": 0, "name": "shared-types", "status": "pending" },
+    { "step": 1, "name": "analytics-api", "status": "pending" },
+    { "step": 2, "name": "analytics-hooks", "status": "pending" },
+    { "step": 3, "name": "analytics-ui", "status": "pending" }
+  ]
+}
