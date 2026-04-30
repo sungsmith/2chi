@@ -8,6 +8,7 @@ import { buildCareerDescSectionDraftPrompt } from './prompts/career-description.
 import { buildPortfolioSectionDraftPrompt } from './prompts/portfolio.prompt';
 import { buildScrapeParsePrompt, buildCompetencyGapPrompt } from './prompts/scrape.prompt';
 import { buildResumeParsePrompt } from './prompts/resume-parse.prompt';
+import { buildInterviewQuestionsPrompt, buildInterviewFeedbackPrompt } from './prompts/interview-prep.prompt';
 
 interface ParsedExperience {
   title: string;
@@ -280,6 +281,60 @@ ${expText}
         experiences: parsed.experiences ?? [],
         confidence: parsed.overallConfidence ?? 0,
       };
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
+  }
+
+  async generateInterviewQuestions(
+    jobTitle: string,
+    jobDescription: string,
+    experienceSummaries: string[],
+    count: number,
+    questionTypes?: string[],
+  ): Promise<Array<{ question: string; questionType: string; order: number }>> {
+    const prompt = buildInterviewQuestionsPrompt(jobTitle, jobDescription, experienceSummaries, count, questionTypes);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      const parsed = JSON.parse(content) as
+        | Array<{ question: string; questionType: string; order: number }>
+        | { questions: Array<{ question: string; questionType: string; order: number }> };
+      const questions = Array.isArray(parsed) ? parsed : (parsed as { questions: Array<{ question: string; questionType: string; order: number }> }).questions ?? [];
+      return questions;
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        throw new Error('AI 응답 파싱에 실패했습니다.');
+      }
+      throw err;
+    }
+  }
+
+  async generateInterviewFeedback(
+    question: string,
+    questionType: string,
+    answer: string,
+  ): Promise<{ feedback: string; score: number }> {
+    const prompt = buildInterviewFeedbackPrompt(question, questionType, answer);
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.3,
+      });
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error('AI 응답이 없습니다.');
+      return JSON.parse(content) as { feedback: string; score: number };
     } catch (err) {
       if (err instanceof SyntaxError) {
         throw new Error('AI 응답 파싱에 실패했습니다.');
