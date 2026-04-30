@@ -1,0 +1,10 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase3-c-resume-profile",
+  "steps": [
+    { "step": 0, "name": "shared-types", "status": "pending" },
+    { "step": 1, "name": "resume-profile-api", "status": "pending" },
+    { "step": 2, "name": "resume-profile-hooks", "status": "pending" },
+    { "step": 3, "name": "resume-profile-ui", "status": "pending" }
+  ]
+}
