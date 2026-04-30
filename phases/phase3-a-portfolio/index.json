@@ -7,7 +7,8 @@
       "name": "shared-types",
       "status": "completed",
       "started_at": "2026-04-30T11:42:55+09:00",
-      "summary": "PortfolioDto, PortfolioSectionDto 타입 및 Zod 스키마 packages/shared에 추가"
+      "summary": "PortfolioDto, PortfolioSectionDto 타입 및 Zod 스키마 packages/shared에 추가",
+      "completed_at": "2026-04-30T11:43:50+09:00"
     },
     {
       "step": 1,
