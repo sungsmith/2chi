@@ -13,6 +13,7 @@ import {
   Newspaper,
   Upload,
   LayoutTemplate,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-auth';
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: '/cover-letter', label: '자소서', icon: FileText },
   { href: '/career-desc', label: '경력기술서', icon: ClipboardList },
   { href: '/portfolio', label: '포트폴리오', icon: LayoutTemplate },
+  { href: '/interview-prep', label: '면접 준비', icon: MessageSquare },
   { href: '/company', label: '기업 분석', icon: Building2 },
   { href: '/job-posting', label: '채용공고', icon: Newspaper },
   { href: '/applications', label: '지원 현황', icon: Calendar },
