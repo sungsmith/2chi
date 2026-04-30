@@ -7,7 +7,8 @@
       "name": "shared-types",
       "status": "completed",
       "started_at": "2026-04-30T22:30:27+09:00",
-      "summary": "ResumeProfileDto 타입 및 Zod 스키마 packages/shared에 추가"
+      "summary": "ResumeProfileDto 타입 및 Zod 스키마 packages/shared에 추가",
+      "completed_at": "2026-04-30T22:31:14+09:00"
     },
     {
       "step": 1,
