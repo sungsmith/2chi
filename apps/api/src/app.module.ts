@@ -14,6 +14,7 @@ import { FilesModule } from './files/files.module';
 import { CareerDescriptionsModule } from './career-descriptions/career-descriptions.module';
 import { JobPostingsModule } from './job-postings/job-postings.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { PortfoliosModule } from './portfolios/portfolios.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -39,6 +40,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     CareerDescriptionsModule,
     JobPostingsModule,
     OnboardingModule,
+    PortfoliosModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
