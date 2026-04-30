@@ -15,3 +15,5 @@ export * from './types/onboarding';
 export * from './schemas/onboarding.schema';
 export * from './types/portfolio';
 export * from './schemas/portfolio.schema';
+export * from './types/interview-prep';
+export * from './schemas/interview-prep.schema';
