@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "ai-prompts",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-30T11:43:50+09:00",
+      "summary": "portfolio.prompt.ts 생성, AiService에 streamPortfolioSectionDraft 메서드 추가",
+      "completed_at": "2026-04-30T11:50:00+09:00"
     },
     {
       "step": 2,
