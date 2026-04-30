@@ -17,3 +17,5 @@ export * from './types/portfolio';
 export * from './schemas/portfolio.schema';
 export * from './types/interview-prep';
 export * from './schemas/interview-prep.schema';
+export * from './types/resume-profile';
+export * from './schemas/resume-profile.schema';
