@@ -23,7 +23,8 @@
       "name": "resume-profile-hooks",
       "status": "completed",
       "started_at": "2026-04-30T22:50:03+09:00",
-      "summary": "use-resume-profiles.ts 생성 — CRUD 훅 5개 포함"
+      "summary": "use-resume-profiles.ts 생성 — CRUD 훅 5개 포함",
+      "completed_at": "2026-04-30T23:01:10+09:00"
     },
     {
       "step": 3,
