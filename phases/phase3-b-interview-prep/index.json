@@ -1,0 +1,11 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase3-b-interview-prep",
+  "steps": [
+    { "step": 0, "name": "shared-types", "status": "pending" },
+    { "step": 1, "name": "ai-prompts", "status": "pending" },
+    { "step": 2, "name": "interview-prep-api", "status": "pending" },
+    { "step": 3, "name": "interview-prep-hooks", "status": "pending" },
+    { "step": 4, "name": "interview-prep-ui", "status": "pending" }
+  ]
+}
