@@ -1,0 +1,11 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase3-a-portfolio",
+  "steps": [
+    { "step": 0, "name": "shared-types", "status": "pending" },
+    { "step": 1, "name": "ai-prompts", "status": "pending" },
+    { "step": 2, "name": "portfolio-api", "status": "pending" },
+    { "step": 3, "name": "portfolio-hooks", "status": "pending" },
+    { "step": 4, "name": "portfolio-ui", "status": "pending" }
+  ]
+}
