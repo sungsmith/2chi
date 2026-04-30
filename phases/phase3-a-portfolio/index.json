@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "portfolio-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-30T11:51:44+09:00",
+      "summary": "use-portfolios.ts (TanStack Query 훅), use-portfolio-section-draft.ts (SSE 훅) 생성",
+      "completed_at": "2026-04-30T12:05:00+09:00"
     },
     {
       "step": 4,
