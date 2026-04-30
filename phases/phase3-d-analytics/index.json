@@ -2,9 +2,28 @@
   "project": "이취 (2chi)",
   "phase": "phase3-d-analytics",
   "steps": [
-    { "step": 0, "name": "shared-types", "status": "pending" },
-    { "step": 1, "name": "analytics-api", "status": "pending" },
-    { "step": 2, "name": "analytics-hooks", "status": "pending" },
-    { "step": 3, "name": "analytics-ui", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-types",
+      "status": "completed",
+      "started_at": "2026-04-30T23:04:48+09:00",
+      "summary": "AnalyticsSummaryDto, ApplicationStatisticsDto, ApplicationTrendDto, StageConversionDto 타입 packages/shared에 추가"
+    },
+    {
+      "step": 1,
+      "name": "analytics-api",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "analytics-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "analytics-ui",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-30T23:04:48+09:00"
 }
