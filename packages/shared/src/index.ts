@@ -13,3 +13,5 @@ export * from './types/career-description';
 export * from './schemas/career-description.schema';
 export * from './types/onboarding';
 export * from './schemas/onboarding.schema';
+export * from './types/portfolio';
+export * from './schemas/portfolio.schema';
