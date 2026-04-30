@@ -16,6 +16,7 @@ import { JobPostingsModule } from './job-postings/job-postings.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { InterviewPrepsModule } from './interview-preps/interview-preps.module';
+import { ResumeProfilesModule } from './resume-profiles/resume-profiles.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 
 @Module({
@@ -43,6 +44,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     OnboardingModule,
     PortfoliosModule,
     InterviewPrepsModule,
+    ResumeProfilesModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
