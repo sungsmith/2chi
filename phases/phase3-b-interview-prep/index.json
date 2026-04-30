@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "ai-prompts",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-30T22:17:21+09:00",
+      "summary": "interview-prep.prompt.ts 생성, AiService에 generateInterviewQuestions(4o-mini), generateInterviewFeedback(4o) 추가",
+      "completed_at": "2026-04-30T22:30:00+09:00"
     },
     {
       "step": 2,
