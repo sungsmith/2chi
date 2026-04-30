@@ -33,7 +33,8 @@
       "Bash(npm run *)",
       "Bash(mkdir -p /Users/sungjiwon/claude/2chi/apps/web/app/\\\\\\(dashboard\\\\\\)/company/\\\\[id\\\\])",
       "Bash(mv /Users/sungjiwon/claude/2chi/apps/web/app/company/\\\\[id\\\\]/page.tsx /Users/sungjiwon/claude/2chi/apps/web/app/\\\\\\(dashboard\\\\\\)/company/\\\\[id\\\\]/page.tsx)",
-      "Bash(rmdir /Users/sungjiwon/claude/2chi/apps/web/app/company/\\\\[id\\\\])"
+      "Bash(rmdir /Users/sungjiwon/claude/2chi/apps/web/app/company/\\\\[id\\\\])",
+      "Bash(npx tsx *)"
     ]
   }
 }
