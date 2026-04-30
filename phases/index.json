@@ -48,7 +48,8 @@
     },
     {
       "dir": "phase3-b-interview-prep",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-30T22:30:21+09:00"
     },
     {
       "dir": "phase3-c-resume-profile",
