@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "interview-prep-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-30T22:24:58+09:00",
+      "summary": "use-interview-preps.ts 생성 — CRUD, 질문생성, 답변저장, 피드백 요청 훅 포함",
+      "completed_at": "2026-04-30T22:30:00+09:00"
     },
     {
       "step": 4,
