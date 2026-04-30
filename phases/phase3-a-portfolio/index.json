@@ -2,10 +2,33 @@
   "project": "이취 (2chi)",
   "phase": "phase3-a-portfolio",
   "steps": [
-    { "step": 0, "name": "shared-types", "status": "pending" },
-    { "step": 1, "name": "ai-prompts", "status": "pending" },
-    { "step": 2, "name": "portfolio-api", "status": "pending" },
-    { "step": 3, "name": "portfolio-hooks", "status": "pending" },
-    { "step": 4, "name": "portfolio-ui", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "shared-types",
+      "status": "completed",
+      "started_at": "2026-04-30T11:42:55+09:00",
+      "summary": "PortfolioDto, PortfolioSectionDto 타입 및 Zod 스키마 packages/shared에 추가"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "portfolio-api",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "portfolio-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "portfolio-ui",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-30T11:42:55+09:00"
 }
