@@ -31,3 +31,5 @@ __exportStar(require("./types/onboarding"), exports);
 __exportStar(require("./schemas/onboarding.schema"), exports);
 __exportStar(require("./types/portfolio"), exports);
 __exportStar(require("./schemas/portfolio.schema"), exports);
+__exportStar(require("./types/interview-prep"), exports);
+__exportStar(require("./schemas/interview-prep.schema"), exports);
