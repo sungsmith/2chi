@@ -29,3 +29,5 @@ __exportStar(require("./types/career-description"), exports);
 __exportStar(require("./schemas/career-description.schema"), exports);
 __exportStar(require("./types/onboarding"), exports);
 __exportStar(require("./schemas/onboarding.schema"), exports);
+__exportStar(require("./types/portfolio"), exports);
+__exportStar(require("./schemas/portfolio.schema"), exports);
