@@ -127,9 +127,24 @@ export function useReorderSections(portfolioId: string) {
 }
 
 export function useGeneratePortfolioPdf(portfolioId: string) {
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (): Promise<{ url: string }> => {
-      const res = await api.post<{ url: string }>(`/portfolios/${portfolioId}/pdf`, {});
+    mutationFn: async (): Promise<{ jobId: string }> => {
+      const res = await api.post<{ jobId: string }>(`/portfolios/${portfolioId}/pdf`, {});
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
+    onSuccess: () => {
+      // 포트폴리오 데이터를 폴링하여 pdfUrl이 채워지면 최신 상태로 갱신
+      qc.invalidateQueries({ queryKey: [...PORTFOLIO_KEY, portfolioId] });
+    },
+  });
+}
+
+export function usePortfolioPdfUrl(portfolioId: string) {
+  return useMutation({
+    mutationFn: async (): Promise<{ url: string | null }> => {
+      const res = await api.get<{ url: string | null }>(`/portfolios/${portfolioId}/pdf-url`);
       if (!res.success) throw new Error(res.error.message);
       return res.data;
     },

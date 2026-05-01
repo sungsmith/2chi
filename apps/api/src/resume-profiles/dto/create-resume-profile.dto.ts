@@ -1,4 +1,4 @@
-import { IsString, IsArray, MinLength, MaxLength, ArrayMinSize } from 'class-validator';
+import { IsString, IsArray, IsOptional, MinLength, MaxLength, ArrayMinSize } from 'class-validator';
 
 export class CreateResumeProfileDto {
   @IsString()
@@ -6,6 +6,7 @@ export class CreateResumeProfileDto {
   @MaxLength(100)
   name!: string;
 
+  @IsOptional()
   @IsString()
   @MaxLength(300)
   description: string = '';

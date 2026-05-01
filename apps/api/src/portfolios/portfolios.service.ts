@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as Handlebars from 'handlebars';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
 import { FilesService } from '../files/files.service';
@@ -53,6 +52,7 @@ export class PortfoliosService {
     private readonly ai: AiService,
     private readonly files: FilesService,
     private readonly experiencesService: ExperiencesService,
+    @InjectQueue('portfolio') private readonly queue: Queue,
   ) {}
 
   async findAll(userId: string): Promise<PortfolioDto[]> {
@@ -205,50 +205,21 @@ export class PortfoliosService {
     }
   }
 
-  async generatePdf(portfolioId: string, userId: string): Promise<string> {
-    const portfolio = await this.findOne(portfolioId, userId);
+  async generatePdf(portfolioId: string, userId: string): Promise<{ jobId: string }> {
+    await this.findOne(portfolioId, userId);
+    const job = await this.queue.add('generate-pdf', { portfolioId });
+    return { jobId: job.id.toString() };
+  }
 
-    const templatePath = path.join(__dirname, 'templates', 'portfolio.template.hbs');
-    const templateSource = fs.readFileSync(templatePath, 'utf-8');
-    const template = Handlebars.compile(templateSource);
-    const html = template({
-      title: portfolio.title,
-      versionLabel: portfolio.versionLabel,
-      sections: portfolio.sections,
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const chromium = require('@sparticuz/chromium');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const puppeteer = require('puppeteer-core');
-
-    const executablePath = await chromium.executablePath();
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath,
-      headless: chromium.headless,
-    });
-
-    let pdfBuffer: Buffer;
-    try {
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      const pdf = await page.pdf({ format: 'A4', printBackground: true });
-      pdfBuffer = Buffer.from(pdf);
-    } finally {
-      await browser.close();
-    }
-
-    const key = `portfolio/${portfolioId}/document.pdf`;
-    await this.files.uploadBuffer(pdfBuffer, key, 'application/pdf');
-
-    await this.prisma.portfolio.update({
+  async getPdfUrl(portfolioId: string, userId: string): Promise<string | null> {
+    const item = await this.prisma.portfolio.findUnique({
       where: { id: portfolioId },
-      data: { pdfUrl: key },
+      include: { sections: { orderBy: { order: 'asc' } } },
     });
-
-    return this.files.getSignedDownloadUrl(key);
+    if (!item) throw new NotFoundException('포트폴리오를 찾을 수 없습니다.');
+    if (item.userId !== userId) throw new ForbiddenException();
+    if (!item.pdfUrl) return null;
+    return this.files.getSignedDownloadUrl(item.pdfUrl);
   }
 
   private toDto(item: PrismaPortfolio): PortfolioDto {
@@ -258,6 +229,7 @@ export class PortfoliosService {
       title: item.title,
       templateId: item.templateId ?? '',
       versionLabel: item.versionLabel ?? '',
+      pdfUrl: item.pdfUrl,
       sections: item.sections.map((s) => this.toSectionDto(s)),
       createdAt: item.createdAt.toISOString(),
       updatedAt: item.updatedAt.toISOString(),
@@ -273,8 +245,6 @@ export class PortfoliosService {
       title: content?.title ?? '',
       content: content?.body ?? '',
       order: section.order,
-      createdAt: '',
-      updatedAt: '',
     };
   }
 }

@@ -15,6 +15,7 @@ import {
   useCreateSection,
   useReorderSections,
   useGeneratePortfolioPdf,
+  usePortfolioPdfUrl,
 } from '@/hooks/use-portfolios';
 import {
   CreatePortfolioSectionSchema,
@@ -116,18 +117,34 @@ export default function PortfolioDetailPage() {
   const { data: portfolio, isLoading } = usePortfolio(id);
   const reorderSections = useReorderSections(id);
   const generatePdf = useGeneratePortfolioPdf(id);
+  const getPdfUrl = usePortfolioPdfUrl(id);
 
   const [selectedSection, setSelectedSection] = useState<PortfolioSectionDto | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [pdfError, setPdfError] = useState('');
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const handleDownloadPdf = async () => {
     setPdfError('');
+    // PDF가 이미 생성된 경우: signed URL 바로 획득
+    if (portfolio?.pdfUrl) {
+      try {
+        const { url } = await getPdfUrl.mutateAsync();
+        if (url) window.open(url, '_blank');
+      } catch (err) {
+        setPdfError(err instanceof Error ? err.message : 'PDF 다운로드에 실패했습니다.');
+      }
+      return;
+    }
+    // PDF 생성 요청 (비동기 Bull Queue)
+    setIsGeneratingPdf(true);
     try {
-      const { url } = await generatePdf.mutateAsync();
-      window.open(url, '_blank');
+      await generatePdf.mutateAsync();
+      setPdfError('PDF 생성이 시작되었습니다. 잠시 후 다시 클릭하여 다운로드하세요.');
     } catch (err) {
       setPdfError(err instanceof Error ? err.message : 'PDF 생성에 실패했습니다.');
+    } finally {
+      setIsGeneratingPdf(false);
     }
   };
 
@@ -200,17 +217,17 @@ export default function PortfolioDetailPage() {
           <Button
             className="flex items-center gap-2"
             onClick={handleDownloadPdf}
-            disabled={generatePdf.isPending}
+            disabled={generatePdf.isPending || isGeneratingPdf || getPdfUrl.isPending}
           >
-            {generatePdf.isPending ? (
+            {generatePdf.isPending || isGeneratingPdf || getPdfUrl.isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                생성 중...
+                처리 중...
               </>
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                PDF 다운로드
+                {portfolio?.pdfUrl ? 'PDF 다운로드' : 'PDF 생성'}
               </>
             )}
           </Button>

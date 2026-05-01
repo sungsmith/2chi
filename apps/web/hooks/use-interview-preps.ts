@@ -100,3 +100,30 @@ export function useRequestFeedback(id: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: [...INTERVIEW_PREP_KEY, id] }),
   });
 }
+
+/**
+ * Bull Queue 작업 상태를 폴링합니다.
+ * status가 'completed' 또는 'failed'가 되면 폴링을 멈추고 관련 쿼리를 갱신합니다.
+ */
+export function useInterviewPrepJobStatus(prepId: string, jobId: string | null) {
+  const qc = useQueryClient();
+  return useQuery({
+    queryKey: [...INTERVIEW_PREP_KEY, 'job', jobId],
+    queryFn: async () => {
+      const res = await api.get<{ status: string; progress?: number }>(
+        `/interview-preps/jobs/${jobId}`,
+      );
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
+    enabled: !!jobId,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (status === 'completed' || status === 'failed') {
+        qc.invalidateQueries({ queryKey: [...INTERVIEW_PREP_KEY, prepId] });
+        return false;
+      }
+      return 2000;
+    },
+  });
+}

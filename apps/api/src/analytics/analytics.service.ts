@@ -48,9 +48,15 @@ export class AnalyticsService {
     let avgDaysToResult: number | null = null;
     if (appsWithResult.length > 0) {
       const totalDays = appsWithResult.reduce((sum: number, app: any) => {
+        // result가 기록된 마지막 stage history의 createdAt을 결과 날짜로 사용.
+        // stage history가 없으면 updatedAt으로 fallback.
+        const stagesWithResult = (app.stages as any[]).filter((s) => s.result !== null);
+        const resultDate =
+          stagesWithResult.length > 0
+            ? new Date(Math.max(...stagesWithResult.map((s: any) => new Date(s.createdAt).getTime())))
+            : new Date(app.updatedAt);
         const days =
-          (new Date(app.updatedAt).getTime() - new Date(app.appliedAt).getTime()) /
-          (1000 * 60 * 60 * 24);
+          (resultDate.getTime() - new Date(app.appliedAt).getTime()) / (1000 * 60 * 60 * 24);
         return sum + days;
       }, 0);
       avgDaysToResult = Math.round((totalDays / appsWithResult.length) * 10) / 10;

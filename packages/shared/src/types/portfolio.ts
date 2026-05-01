@@ -7,8 +7,6 @@ export interface PortfolioSectionDto {
   title: string;
   content: string;
   order: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface PortfolioDto {
@@ -17,6 +15,7 @@ export interface PortfolioDto {
   title: string;
   templateId: string;
   versionLabel: string;
+  pdfUrl: string | null;
   sections: PortfolioSectionDto[];
   createdAt: string;
   updatedAt: string;

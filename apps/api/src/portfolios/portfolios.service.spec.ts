@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { getQueueToken } from '@nestjs/bull';
 import { PortfoliosService } from './portfolios.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AiService } from '../ai/ai.service';
@@ -25,6 +26,7 @@ const mockPrisma = {
 const mockAi = { streamPortfolioSectionDraft: jest.fn() };
 const mockFiles = { uploadBuffer: jest.fn(), getSignedDownloadUrl: jest.fn() };
 const mockExperiencesService = { findAll: jest.fn() };
+const mockQueue = { add: jest.fn().mockResolvedValue({ id: 'job-1' }) };
 
 type MockSection = {
   id: string;
@@ -60,6 +62,7 @@ describe('PortfoliosService', () => {
         { provide: AiService, useValue: mockAi },
         { provide: FilesService, useValue: mockFiles },
         { provide: ExperiencesService, useValue: mockExperiencesService },
+        { provide: getQueueToken('portfolio'), useValue: mockQueue },
       ],
     }).compile();
     service = module.get<PortfoliosService>(PortfoliosService);

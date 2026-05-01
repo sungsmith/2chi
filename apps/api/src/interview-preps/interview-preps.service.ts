@@ -98,6 +98,14 @@ export class InterviewPrepsService {
     return this.toAnswerDto(updated as PrismaInterviewAnswer);
   }
 
+  async getJobStatus(jobId: string): Promise<{ status: string; progress?: number }> {
+    const job = await this.queue.getJob(jobId);
+    if (!job) throw new NotFoundException('작업을 찾을 수 없습니다.');
+    const state = await job.getState();
+    const progress = job.progress();
+    return { status: state, progress: typeof progress === 'number' ? progress : undefined };
+  }
+
   async requestFeedback(id: string, answerId: string, userId: string): Promise<{ jobId: string }> {
     const item = await this.prisma.interviewPrep.findUnique({ where: { id } });
     if (!item) throw new NotFoundException('면접준비를 찾을 수 없습니다.');

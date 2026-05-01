@@ -113,7 +113,13 @@ export class PortfoliosController {
 
   @Post(':id/pdf')
   async generatePdf(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-    const url = await this.portfoliosService.generatePdf(id, user.sub);
+    const data = await this.portfoliosService.generatePdf(id, user.sub);
+    return { success: true, data };
+  }
+
+  @Get(':id/pdf-url')
+  async getPdfUrl(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    const url = await this.portfoliosService.getPdfUrl(id, user.sub);
     return { success: true, data: { url } };
   }
 }

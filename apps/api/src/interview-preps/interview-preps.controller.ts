@@ -8,7 +8,9 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { InterviewPrepsService } from './interview-preps.service';
 import { CreateInterviewPrepDto } from './dto/create-interview-prep.dto';
 import { GenerateQuestionsDto } from './dto/generate-questions.dto';
@@ -16,12 +18,19 @@ import { SaveAnswerDto } from './dto/save-answer.dto';
 import { CurrentUser, JwtPayload } from '../common/decorators/current-user.decorator';
 
 @Controller('interview-preps')
+@UseGuards(JwtAuthGuard)
 export class InterviewPrepsController {
   constructor(private readonly interviewPrepsService: InterviewPrepsService) {}
 
   @Get()
   async findAll(@CurrentUser() user: JwtPayload) {
     const data = await this.interviewPrepsService.findAll(user.sub);
+    return { success: true, data };
+  }
+
+  @Get('jobs/:jobId')
+  async getJobStatus(@Param('jobId') jobId: string) {
+    const data = await this.interviewPrepsService.getJobStatus(jobId);
     return { success: true, data };
   }
 
