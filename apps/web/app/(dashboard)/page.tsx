@@ -3,12 +3,17 @@
 import { useExperiences } from '@/hooks/use-experiences';
 import { useCoverLetters } from '@/hooks/use-cover-letters';
 import { useApplications } from '@/hooks/use-applications';
+import { useAnalyticsSummary } from '@/hooks/use-analytics';
+import { StatisticsCards } from '@/components/analytics/statistics-cards';
+import { MonthlyTrendChart } from '@/components/analytics/monthly-trend-chart';
+import { StageConversionTable } from '@/components/analytics/stage-conversion-table';
 import Link from 'next/link';
 
 export default function DashboardPage() {
   const { data: experiences } = useExperiences();
   const { data: coverLetters } = useCoverLetters();
   const { data: applications } = useApplications();
+  const { data: analytics, isLoading: analyticsLoading } = useAnalyticsSummary();
 
   const activeApplications = applications?.filter(
     (a) => a.currentStage !== 'DONE' && a.result !== 'FAIL' && a.result !== 'WITHDRAWN',
@@ -34,6 +39,21 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4">지원 현황 분석</h2>
+        {analyticsLoading ? (
+          <div className="text-sm text-slate-400">로딩 중...</div>
+        ) : analytics ? (
+          <div className="space-y-6">
+            <StatisticsCards statistics={analytics.statistics} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <MonthlyTrendChart data={analytics.monthlyTrend} />
+              <StageConversionTable data={analytics.stageConversion} />
+            </div>
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }
