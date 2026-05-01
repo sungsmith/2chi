@@ -29,7 +29,10 @@
     {
       "step": 3,
       "name": "analytics-ui",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-05-01T09:05:20+09:00",
+      "summary": "대시보드 홈에 통계 섹션 추가 — 4개 요약 카드, 월별 추이 차트(recharts), 단계 전환율 테이블",
+      "completed_at": "2026-05-01T09:30:00+09:00"
     }
   ],
   "created_at": "2026-04-30T23:04:48+09:00"
