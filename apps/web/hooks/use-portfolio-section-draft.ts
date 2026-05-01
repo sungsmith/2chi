@@ -58,7 +58,7 @@ export function usePortfolioSectionDraft(portfolioId: string, sectionId: string)
           try {
             const parsed = JSON.parse(jsonStr);
             if (parsed.error) {
-              setError(parsed.error);
+              setError(parsed.message ?? '생성 중 오류가 발생했습니다.');
               setIsStreaming(false);
               return;
             }

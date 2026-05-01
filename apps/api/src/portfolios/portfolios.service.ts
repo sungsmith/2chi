@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -151,7 +151,11 @@ export class PortfoliosService {
   }
 
   async reorderSections(portfolioId: string, userId: string, sectionIds: string[]): Promise<void> {
-    await this.findOne(portfolioId, userId);
+    const portfolio = await this.findOne(portfolioId, userId);
+    const validIds = new Set(portfolio.sections.map((s) => s.id));
+    if (sectionIds.some((id) => !validIds.has(id))) {
+      throw new BadRequestException('유효하지 않은 섹션 ID가 포함되어 있습니다.');
+    }
     await this.prisma.$transaction(
       sectionIds.map((id, index) =>
         this.prisma.portfolioSection.update({
