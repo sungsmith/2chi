@@ -13,10 +13,10 @@
     {
       "step": 1,
       "name": "analytics-api",
-      "status": "error",
-      "started_at": "2026-04-30T23:05:25+09:00",
-      "error_message": "[3회 시도 후 실패] Step did not update status",
-      "failed_at": "2026-04-30T23:05:38+09:00"
+      "status": "completed",
+      "started_at": "2026-05-01T09:02:20+09:00",
+      "summary": "analytics NestJS 모듈 생성 — GET /analytics/summary 엔드포인트, 실시간 통계 계산 포함",
+      "completed_at": "2026-05-01T09:10:00+09:00"
     },
     {
       "step": 2,
