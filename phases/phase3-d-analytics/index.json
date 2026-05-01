@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "analytics-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-05-01T09:04:29+09:00",
+      "summary": "use-analytics.ts 생성 — useAnalyticsSummary 훅, 5분 캐시",
+      "completed_at": "2026-05-01T09:10:00+09:00"
     },
     {
       "step": 3,
