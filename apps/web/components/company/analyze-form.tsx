@@ -77,10 +77,14 @@ export function AnalyzeForm() {
   };
 
   const onSubmit = async (data: AnalyzeCompanyInput) => {
-    const res = await analyze.mutateAsync(data);
-    if (!res.success) return;
-    const company = res.data as unknown as CompanyDto;
-    router.push(`/company/${company.id}`);
+    const result = await analyze.mutateAsync(data);
+    if (result.cached) {
+      // 캐시 히트: 즉시 기업 페이지로 이동
+      router.push(`/company/${result.company.id}`);
+    } else {
+      // 새 분석 큐잉: 기업 목록 페이지에서 결과 확인
+      router.push('/company');
+    }
   };
 
   return (
@@ -147,8 +151,10 @@ export function AnalyzeForm() {
             {...register('additionalContext')}
           />
         </div>
-        {analyze.data && !analyze.data.success && (
-          <p className="text-xs text-red-500">{analyze.data.error.message}</p>
+        {analyze.isError && (
+          <p className="text-xs text-red-500">
+            {analyze.error instanceof Error ? analyze.error.message : '분석에 실패했습니다.'}
+          </p>
         )}
         <Button type="submit" disabled={analyze.isPending}>
           {analyze.isPending ? 'AI 분석 중...' : '기업 분석 시작'}

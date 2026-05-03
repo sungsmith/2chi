@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { AnalyzeCompanyDto } from './dto/analyze-company.dto';
 import { GapAnalysisDto } from './dto/gap-analysis.dto';
@@ -14,6 +14,12 @@ export class CompaniesController {
     return { success: true, data };
   }
 
+  @Get('jobs/:jobId')
+  async getJobStatus(@Param('jobId') jobId: string) {
+    const data = await this.companiesService.getJobStatus(jobId);
+    return { success: true, data };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     const data = await this.companiesService.findOne(id, user.sub);
@@ -21,8 +27,9 @@ export class CompaniesController {
   }
 
   @Post('analyze')
+  @HttpCode(HttpStatus.ACCEPTED)
   async analyze(@Body() dto: AnalyzeCompanyDto, @CurrentUser() user: JwtPayload) {
-    const data = await this.companiesService.analyzeAndUpsert(user.sub, dto);
+    const data = await this.companiesService.enqueueAnalysis(user.sub, dto);
     return { success: true, data };
   }
 

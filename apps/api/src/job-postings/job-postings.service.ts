@@ -51,7 +51,32 @@ export class JobPostingsService {
     });
   }
 
+  private isPrivateHost(hostname: string): boolean {
+    // loopback
+    if (hostname === 'localhost' || hostname === '::1') return true;
+    // IPv4 private ranges: 10.x, 172.16-31.x, 192.168.x, 127.x, 169.254.x (link-local)
+    const privateRanges = [
+      /^127\./,
+      /^10\./,
+      /^172\.(1[6-9]|2\d|3[01])\./,
+      /^192\.168\./,
+      /^169\.254\./,
+    ];
+    return privateRanges.some((re) => re.test(hostname));
+  }
+
   async scrapeAndCreate(userId: string, dto: ScrapeJobPostingDto) {
+    // SSRF 방지: 내부 네트워크 주소 차단
+    try {
+      const parsed = new URL(dto.url);
+      if (this.isPrivateHost(parsed.hostname)) {
+        throw new BadRequestException('허용되지 않는 URL입니다.');
+      }
+    } catch (e) {
+      if (e instanceof BadRequestException) throw e;
+      throw new BadRequestException('올바른 URL을 입력하세요.');
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 

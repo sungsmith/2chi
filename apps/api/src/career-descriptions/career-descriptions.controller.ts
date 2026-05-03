@@ -6,8 +6,6 @@ import {
   Delete,
   Param,
   Body,
-  HttpCode,
-  HttpStatus,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -51,9 +49,9 @@ export class CareerDescriptionsController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.careerDescriptionsService.remove(id, user.sub);
+    return { success: true, data: null };
   }
 
   @Post(':id/sections/:sectionId/draft')

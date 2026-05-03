@@ -52,9 +52,18 @@ export class CompaniesService {
     return { cached: false, jobId: job.id };
   }
 
+  async getJobStatus(jobId: string): Promise<{ status: string; progress?: number }> {
+    const job = await this.companyQueue.getJob(jobId);
+    if (!job) throw new NotFoundException('작업을 찾을 수 없습니다.');
+    const state = await job.getState();
+    const progress = job.progress();
+    return { status: state, progress: typeof progress === 'number' ? progress : undefined };
+  }
+
   async analyzeGap(companyId: string, jobPostingId: string, userId: string) {
     const company = await this.prisma.company.findUnique({ where: { id: companyId } });
     if (!company) throw new NotFoundException('기업 정보를 찾을 수 없습니다.');
+    if (company.userId !== userId) throw new ForbiddenException();
 
     const jobPosting = await this.prisma.jobPosting.findUnique({ where: { id: jobPostingId } });
     if (!jobPosting || jobPosting.userId !== userId) {

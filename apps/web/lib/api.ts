@@ -33,8 +33,10 @@ async function tryRefreshToken(): Promise<string | null> {
   try {
     const res = await fetch(`${API_BASE}/auth/refresh`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${refreshToken}`,
+      },
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -77,6 +79,9 @@ async function apiRequest<T>(
     return { success: false, error: { code: 'UNAUTHORIZED', message: '세션이 만료되었습니다.' } } as ApiResponse<T>;
   }
 
+  if (response.status === 204) {
+    return { success: true, data: null } as ApiResponse<T>;
+  }
   return response.json();
 }
 

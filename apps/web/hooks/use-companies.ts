@@ -27,11 +27,46 @@ export function useCompany(id: string) {
   });
 }
 
+type AnalyzeResult =
+  | { cached: true; company: CompanyDto }
+  | { cached: false; jobId: string };
+
 export function useAnalyzeCompany() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: AnalyzeCompanyInput) => api.post<CompanyDto>('/companies/analyze', data),
+    mutationFn: async (data: AnalyzeCompanyInput): Promise<AnalyzeResult> => {
+      const res = await api.post<AnalyzeResult>('/companies/analyze', data);
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: CO_KEY }),
+  });
+}
+
+/**
+ * 기업 분석 Bull Queue 작업 상태 폴링.
+ * completed / failed 가 되면 폴링 중단 후 companies 쿼리 갱신.
+ */
+export function useCompanyJobStatus(jobId: string | null) {
+  const qc = useQueryClient();
+  return useQuery({
+    queryKey: [...CO_KEY, 'job', jobId],
+    queryFn: async () => {
+      const res = await api.get<{ status: string; progress?: number }>(
+        `/companies/jobs/${jobId}`,
+      );
+      if (!res.success) throw new Error(res.error.message);
+      return res.data;
+    },
+    enabled: !!jobId,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (status === 'completed' || status === 'failed') {
+        qc.invalidateQueries({ queryKey: CO_KEY });
+        return false;
+      }
+      return 2000;
+    },
   });
 }
 
