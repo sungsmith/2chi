@@ -57,15 +57,19 @@ export class AiService {
 
   async analyzeCompany(
     companyName: string,
-    jobTitle?: string,
+    jobPostingText?: string,
     additionalContext?: string,
   ): Promise<
     | {
         summary: string;
         products: string[];
         recentNews: string[];
-        keyCompetencies: string[];
         culture: string | null;
+        keyCompetencies: string[];
+        jobTitle: string;
+        requiredCompetencies: string[];
+        preferredCompetencies: string[];
+        jobSummary: string;
       }
     | { error: string; message: string }
   > {
@@ -73,22 +77,17 @@ export class AiService {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
-          { role: 'user', content: buildCompanyAnalysisPrompt(companyName, jobTitle, additionalContext) },
+          {
+            role: 'user',
+            content: buildCompanyAnalysisPrompt(companyName, jobPostingText, additionalContext),
+          },
         ],
         response_format: { type: 'json_object' },
         temperature: 0.2,
       });
       const content = response.choices[0].message.content;
       if (!content) throw new Error('AI 응답이 없습니다.');
-      return JSON.parse(content) as
-        | {
-            summary: string;
-            products: string[];
-            recentNews: string[];
-            keyCompetencies: string[];
-            culture: string | null;
-          }
-        | { error: string; message: string };
+      return JSON.parse(content);
     } catch (err) {
       if (err instanceof SyntaxError) {
         throw new Error('AI 응답 파싱에 실패했습니다.');
