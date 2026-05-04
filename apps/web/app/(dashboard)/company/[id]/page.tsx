@@ -5,17 +5,18 @@ import { Building2, RefreshCw, Briefcase, BarChart2 } from 'lucide-react';
 import { CompetencyList } from '@/components/company/competency-list';
 import { AnalyzeForm } from '@/components/company/analyze-form';
 import { useCompany } from '@/hooks/use-companies';
-import type { CompanyJobInfo, CompetencyGapDto } from '@2chi/shared';
+
 
 export default function CompanyDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: company, isLoading } = useCompany(id);
+  const { data: company, isLoading, isError } = useCompany(id);
 
   if (isLoading) return <div className="text-sm text-slate-500">불러오는 중...</div>;
+  if (isError) return <div className="text-sm text-red-500">불러오는 중 오류가 발생했습니다.</div>;
   if (!company) return <div className="text-sm text-red-500">기업 정보를 찾을 수 없습니다.</div>;
 
-  const jobInfo = company.jobInfo as CompanyJobInfo | null;
-  const gapResult = company.gapResult as CompetencyGapDto | null;
+  const jobInfo = company.jobInfo;
+  const gapResult = company.gapResult;
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -52,8 +53,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">주요 제품/서비스</p>
               <ul className="space-y-1">
-                {company.officialInfo.products.map((p, i) => (
-                  <li key={i} className="text-sm text-slate-700 flex gap-2">
+                {company.officialInfo.products.map((p) => (
+                  <li key={p} className="text-sm text-slate-700 flex gap-2">
                     <span className="text-slate-400">•</span>{p}
                   </li>
                 ))}
@@ -64,8 +65,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">최근 동향</p>
               <ul className="space-y-1">
-                {company.officialInfo.recentNews.map((n, i) => (
-                  <li key={i} className="text-sm text-slate-700 flex gap-2">
+                {company.officialInfo.recentNews.map((n) => (
+                  <li key={n} className="text-sm text-slate-700 flex gap-2">
                     <span className="text-slate-400">•</span>{n}
                   </li>
                 ))}
@@ -92,8 +93,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">필수 역량</p>
               <div className="flex flex-wrap gap-1.5">
-                {jobInfo.requiredCompetencies.map((c, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                {jobInfo.requiredCompetencies.map((c) => (
+                  <span key={c} className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
                     {c}
                   </span>
                 ))}
@@ -104,8 +105,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">우대 역량</p>
               <div className="flex flex-wrap gap-1.5">
-                {jobInfo.preferredCompetencies.map((c, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-50 text-slate-600 border border-slate-200">
+                {jobInfo.preferredCompetencies.map((c) => (
+                  <span key={c} className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-50 text-slate-600 border border-slate-200">
                     {c}
                   </span>
                 ))}
@@ -137,8 +138,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-green-700 uppercase tracking-wide mb-2">보유 역량 ✓</p>
               <div className="flex flex-wrap gap-1.5">
-                {gapResult.myMatched.map((c, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                {gapResult.myMatched.map((c) => (
+                  <span key={c} className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                     {c}
                   </span>
                 ))}
@@ -149,8 +150,8 @@ export default function CompanyDetailPage() {
             <div>
               <p className="text-xs font-medium text-red-600 uppercase tracking-wide mb-2">보강 필요 역량</p>
               <div className="flex flex-wrap gap-1.5">
-                {gapResult.myMissing.map((c, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                {gapResult.myMissing.map((c) => (
+                  <span key={c} className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
                     {c}
                   </span>
                 ))}

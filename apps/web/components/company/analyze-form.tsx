@@ -36,11 +36,17 @@ export function AnalyzeForm() {
     resolver: zodResolver(analyzeCompanySchema),
   });
 
-  // 분석 완료 → 기업 목록으로 이동
+  const [jobError, setJobError] = useState<string | null>(null);
+
+  // 분석 완료/실패 처리
   useEffect(() => {
-    if (jobStatus?.status === 'completed' && pendingJobId) {
+    if (!pendingJobId) return;
+    if (jobStatus?.status === 'completed') {
       setPendingJobId(null);
       router.push('/company');
+    } else if (jobStatus?.status === 'failed') {
+      setPendingJobId(null);
+      setJobError('분석 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   }, [jobStatus, pendingJobId, router]);
 
@@ -89,11 +95,16 @@ export function AnalyzeForm() {
   };
 
   const onSubmit = async (data: AnalyzeCompanyInput) => {
-    const result = await analyze.mutateAsync(data);
-    if (result.cached) {
-      router.push(`/company/${result.company.id}`);
-    } else {
-      setPendingJobId(result.jobId);
+    setJobError(null);
+    try {
+      const result = await analyze.mutateAsync(data);
+      if (result.cached) {
+        router.push(`/company/${result.company.id}`);
+      } else {
+        setPendingJobId(result.jobId);
+      }
+    } catch {
+      // error surfaced via analyze.isError
     }
   };
 
@@ -179,9 +190,9 @@ export function AnalyzeForm() {
           />
         </div>
 
-        {analyze.isError && (
+        {(analyze.isError || jobError) && (
           <p className="text-xs text-red-500">
-            {analyze.error instanceof Error ? analyze.error.message : '분석에 실패했습니다.'}
+            {jobError ?? (analyze.error instanceof Error ? analyze.error.message : '분석에 실패했습니다.')}
           </p>
         )}
 
