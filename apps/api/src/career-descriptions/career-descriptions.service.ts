@@ -15,27 +15,12 @@ import { CreateCareerDescriptionDto } from './dto/create-career-description.dto'
 import { UpdateCareerDescriptionDto } from './dto/update-career-description.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
 import { GenerateSectionDraftDto } from './dto/generate-section-draft.dto';
-type SectionType = 'INTRO' | 'EXPERIENCE' | 'SKILL' | 'ACHIEVEMENT' | 'CUSTOM';
-interface SectionContent { heading: string; body: string; }
-interface CareerDescriptionSectionDto {
-  id: string;
-  careerDescriptionId: string;
-  experienceId: string | null;
-  sectionType: SectionType;
-  order: number;
-  content: SectionContent;
-}
-interface CareerDescriptionDto {
-  id: string;
-  userId: string;
-  title: string;
-  versionLabel: string | null;
-  targetJobType: string | null;
-  pdfUrl: string | null;
-  sections: CareerDescriptionSectionDto[];
-  createdAt: string;
-  updatedAt: string;
-}
+import {
+  SectionType,
+  SectionContent,
+  CareerDescriptionSectionDto,
+  CareerDescriptionDto,
+} from '@2chi/shared';
 
 const DEFAULT_SECTIONS = [
   { sectionType: 'INTRO', order: 0, content: { heading: '자기소개', body: '' } },

@@ -4,8 +4,9 @@ import { Cache } from 'cache-manager';
 import { randomUUID } from 'crypto';
 import pdfParse from 'pdf-parse';
 import * as mammoth from 'mammoth';
+import { ExperienceType } from '@prisma/client';
 import { AiService } from '../ai/ai.service';
-import { ExperiencesService } from '../experiences/experiences.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { ConfirmOnboardingDto } from './dto/confirm-onboarding.dto';
 import { OnboardingParseResultDto } from '@2chi/shared';
 
@@ -20,7 +21,7 @@ interface CachePayload {
 export class OnboardingService {
   constructor(
     private readonly aiService: AiService,
-    private readonly experiencesService: ExperiencesService,
+    private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
@@ -48,7 +49,7 @@ export class OnboardingService {
     const cacheKey = `onboarding:${userId}:${parseId}`;
     await this.cacheManager.set(cacheKey, { experiences, rawText: text }, THIRTY_MINUTES_MS);
 
-    return { parseId, experiences, rawText: text, confidence };
+    return { parseId, experiences, confidence };
   }
 
   async confirm(
@@ -61,26 +62,43 @@ export class OnboardingService {
       throw new NotFoundException('파싱 결과가 만료되었습니다. 다시 업로드해주세요.');
     }
 
-    const experienceIds: string[] = [];
-    for (const exp of dto.experiences) {
-      const created = await this.experiencesService.create(userId, {
-        title: exp.title,
-        type: exp.type,
-        companyName: exp.companyName,
-        startDate: exp.startDate,
-        endDate: exp.endDate,
-        situation: exp.situation,
-        task: exp.task,
-        action: exp.action,
-        result: exp.result,
-        resultMetric: exp.resultMetric,
-        tagNames: exp.tags,
-      });
-      experienceIds.push(created.id);
-    }
+    // Pre-resolve tags outside the transaction (upsert is idempotent and safe)
+    const tagMaps = await Promise.all(
+      dto.experiences.map((exp) =>
+        Promise.all(
+          (exp.tags ?? []).map((name: string) =>
+            this.prisma.tag.upsert({ where: { name }, update: {}, create: { name } }),
+          ),
+        ),
+      ),
+    );
+
+    // Create all experiences atomically
+    const created = await this.prisma.$transaction(
+      dto.experiences.map((exp, i) =>
+        this.prisma.experience.create({
+          data: {
+            userId,
+            title: exp.title,
+            type: exp.type as ExperienceType,
+            companyName: exp.companyName ?? null,
+            startDate: exp.startDate ? new Date(exp.startDate) : null,
+            endDate: exp.endDate ? new Date(exp.endDate) : null,
+            situation: exp.situation ?? null,
+            task: exp.task ?? null,
+            action: exp.action ?? null,
+            result: exp.result ?? null,
+            resultMetric: exp.resultMetric ?? null,
+            tags: { create: tagMaps[i].map((tag) => ({ tagId: tag.id })) },
+          },
+          select: { id: true },
+        }),
+      ),
+    );
 
     await this.cacheManager.del(cacheKey);
 
+    const experienceIds = created.map((e) => e.id);
     return { createdCount: experienceIds.length, experienceIds };
   }
 }

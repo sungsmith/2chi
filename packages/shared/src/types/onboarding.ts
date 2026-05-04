@@ -17,6 +17,5 @@ export interface ParsedExperience {
 export interface OnboardingParseResultDto {
   parseId: string;
   experiences: ParsedExperience[];
-  rawText: string;
   confidence: number;
 }
