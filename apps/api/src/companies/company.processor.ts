@@ -10,10 +10,21 @@ export class CompanyProcessor {
   constructor(private companiesService: CompaniesService) {}
 
   @Process('analyze')
-  async handleAnalyze(job: Job<{ userId: string; name: string; jobTitle?: string; additionalContext?: string }>) {
-    const { userId, name, jobTitle, additionalContext } = job.data;
+  async handleAnalyze(
+    job: Job<{
+      userId: string;
+      name: string;
+      jobPostingText?: string;
+      additionalContext?: string;
+    }>,
+  ) {
+    const { userId, name, jobPostingText, additionalContext } = job.data;
     try {
-      await this.companiesService.analyzeAndUpsert(userId, { name, jobTitle, additionalContext });
+      await this.companiesService.analyzeAndUpsert(userId, {
+        name,
+        jobPostingText,
+        additionalContext,
+      });
     } catch (err) {
       this.logger.error(`Job ${job.id} failed: ${(err as Error).message}`, (err as Error).stack);
       throw err;

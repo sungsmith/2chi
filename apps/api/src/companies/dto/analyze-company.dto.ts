@@ -8,8 +8,8 @@ export class AnalyzeCompanyDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
-  jobTitle?: string;
+  @MaxLength(100_000)
+  jobPostingText?: string;
 
   @IsOptional()
   @IsString()
