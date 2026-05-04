@@ -99,65 +99,69 @@ export class ApplicationsService {
       throw new BadRequestException('기타 단계는 카테고리명을 입력해야 합니다.');
     }
 
-    const stageHistory = await this.prisma.applicationStageHistory.create({
-      data: {
-        applicationId,
-        stage,
-        customLabel: stage === 'CUSTOM' ? (customLabel ?? null) : null,
-        scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined,
-        result,
-        note,
-      },
-    });
-
-    await this.prisma.application.update({
-      where: { id: applicationId },
-      data: { currentStage: stage },
-    });
-
     const companyName = app.company?.name ?? app.memo ?? app.jobPosting?.title;
 
-    if (scheduledAt && stage === 'DOCUMENT') {
-      await this.prisma.calendarEvent.create({
+    const stageHistory = await this.prisma.$transaction(async (tx) => {
+      const history = await tx.applicationStageHistory.create({
         data: {
-          userId,
           applicationId,
-          title: `[마감] ${companyName ?? '서류'}`,
-          eventType: 'DEADLINE',
-          scheduledAt: new Date(scheduledAt),
+          stage,
+          customLabel: stage === 'CUSTOM' ? (customLabel ?? null) : null,
+          scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined,
+          result,
+          note,
         },
       });
-    }
 
-    const interviewStages = new Set(['FIRST_INTERVIEW', 'SECOND_INTERVIEW']);
-    if (scheduledAt && interviewStages.has(stage)) {
-      const stageLabel: Record<string, string> = {
-        FIRST_INTERVIEW: '1차',
-        SECOND_INTERVIEW: '2차',
-      };
-      await this.prisma.calendarEvent.create({
-        data: {
-          userId,
-          applicationId,
-          title: `[면접] ${companyName ?? '면접'} ${stageLabel[stage] ?? ''}`,
-          eventType: 'INTERVIEW',
-          scheduledAt: new Date(scheduledAt),
-        },
+      await tx.application.update({
+        where: { id: applicationId },
+        data: { currentStage: stage },
       });
-    }
 
-    if (scheduledAt && stage === 'CUSTOM') {
-      const displayLabel = customLabel ?? '기타';
-      await this.prisma.calendarEvent.create({
-        data: {
-          userId,
-          applicationId,
-          title: `[${displayLabel}] ${companyName ?? ''}`.trim(),
-          eventType: 'OTHER',
-          scheduledAt: new Date(scheduledAt),
-        },
-      });
-    }
+      if (scheduledAt && stage === 'DOCUMENT') {
+        await tx.calendarEvent.create({
+          data: {
+            userId,
+            applicationId,
+            title: `[마감] ${companyName ?? '서류'}`,
+            eventType: 'DEADLINE',
+            scheduledAt: new Date(scheduledAt),
+          },
+        });
+      }
+
+      const interviewStages = new Set(['FIRST_INTERVIEW', 'SECOND_INTERVIEW']);
+      if (scheduledAt && interviewStages.has(stage)) {
+        const stageLabel: Record<string, string> = {
+          FIRST_INTERVIEW: '1차',
+          SECOND_INTERVIEW: '2차',
+        };
+        await tx.calendarEvent.create({
+          data: {
+            userId,
+            applicationId,
+            title: `[면접] ${companyName ?? '면접'} ${stageLabel[stage] ?? ''}`,
+            eventType: 'INTERVIEW',
+            scheduledAt: new Date(scheduledAt),
+          },
+        });
+      }
+
+      if (scheduledAt && stage === 'CUSTOM') {
+        const displayLabel = customLabel ?? '기타';
+        await tx.calendarEvent.create({
+          data: {
+            userId,
+            applicationId,
+            title: `[${displayLabel}] ${companyName ?? ''}`.trim(),
+            eventType: 'OTHER',
+            scheduledAt: new Date(scheduledAt),
+          },
+        });
+      }
+
+      return history;
+    });
 
     return stageHistory;
   }

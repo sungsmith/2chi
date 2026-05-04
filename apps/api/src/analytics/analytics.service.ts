@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   AnalyticsSummaryDto,
@@ -6,6 +7,10 @@ import {
   ApplicationTrendDto,
   StageConversionDto,
 } from '@2chi/shared';
+
+type ApplicationWithStages = Prisma.ApplicationGetPayload<{
+  include: { stages: true };
+}>;
 
 @Injectable()
 export class AnalyticsService {
@@ -26,7 +31,7 @@ export class AnalyticsService {
     };
   }
 
-  private calcStatistics(applications: any[]): ApplicationStatisticsDto {
+  private calcStatistics(applications: ApplicationWithStages[]): ApplicationStatisticsDto {
     const total = applications.length;
     const byStage: Record<string, number> = {};
     const byResult: Record<string, number> = {};
@@ -47,16 +52,16 @@ export class AnalyticsService {
     );
     let avgDaysToResult: number | null = null;
     if (appsWithResult.length > 0) {
-      const totalDays = appsWithResult.reduce((sum: number, app: any) => {
+      const totalDays = appsWithResult.reduce((sum: number, app) => {
         // result가 기록된 마지막 stage history의 createdAt을 결과 날짜로 사용.
         // stage history가 없으면 updatedAt으로 fallback.
-        const stagesWithResult = (app.stages as any[]).filter((s) => s.result !== null);
+        const stagesWithResult = app.stages.filter((s) => s.result !== null);
         const resultDate =
           stagesWithResult.length > 0
-            ? new Date(Math.max(...stagesWithResult.map((s: any) => new Date(s.createdAt).getTime())))
+            ? new Date(Math.max(...stagesWithResult.map((s) => new Date(s.createdAt).getTime())))
             : new Date(app.updatedAt);
         const days =
-          (resultDate.getTime() - new Date(app.appliedAt).getTime()) / (1000 * 60 * 60 * 24);
+          (resultDate.getTime() - new Date(app.appliedAt!).getTime()) / (1000 * 60 * 60 * 24);
         return sum + days;
       }, 0);
       avgDaysToResult = Math.round((totalDays / appsWithResult.length) * 10) / 10;
@@ -65,7 +70,7 @@ export class AnalyticsService {
     return { totalApplications: total, byStage, byResult, passRate, avgDaysToResult };
   }
 
-  private calcMonthlyTrend(applications: any[]): ApplicationTrendDto[] {
+  private calcMonthlyTrend(applications: ApplicationWithStages[]): ApplicationTrendDto[] {
     const now = new Date();
     const months: ApplicationTrendDto[] = [];
 
@@ -91,7 +96,7 @@ export class AnalyticsService {
     return months;
   }
 
-  private calcStageConversion(applications: any[]): StageConversionDto[] {
+  private calcStageConversion(applications: ApplicationWithStages[]): StageConversionDto[] {
     const stageOrder = [
       'DOCUMENT',
       'FIRST_INTERVIEW',
@@ -104,7 +109,7 @@ export class AnalyticsService {
     const stageCounts = stageOrder.map((stage) => {
       if (stage === 'DOCUMENT') return total;
       return applications.filter((app) =>
-        app.stages.some((s: any) => s.stage === stage),
+        app.stages.some((s) => s.stage === stage),
       ).length;
     });
 
