@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Building2, ChevronRight } from 'lucide-react';
+import { Building2, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAnalyzeCompany, useCompanies } from '@/hooks/use-companies';
+import { Textarea } from '@/components/ui/textarea';
+import { useAnalyzeCompany, useCompanies, useCompanyJobStatus } from '@/hooks/use-companies';
 import { analyzeCompanySchema, type AnalyzeCompanyInput, type CompanyDto } from '@2chi/shared';
 
 export function AnalyzeForm() {
@@ -21,7 +22,10 @@ export function AnalyzeForm() {
   const [suggestions, setSuggestions] = useState<CompanyDto[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedFromList, setSelectedFromList] = useState(false);
+  const [pendingJobId, setPendingJobId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { data: jobStatus } = useCompanyJobStatus(pendingJobId);
 
   const {
     register,
@@ -32,7 +36,15 @@ export function AnalyzeForm() {
     resolver: zodResolver(analyzeCompanySchema),
   });
 
-  // Debounce name input by 300ms
+  // 분석 완료 → 기업 목록으로 이동
+  useEffect(() => {
+    if (jobStatus?.status === 'completed' && pendingJobId) {
+      setPendingJobId(null);
+      router.push('/company');
+    }
+  }, [jobStatus, pendingJobId, router]);
+
+  // Debounce name input
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedName(nameInput), 300);
     return () => clearTimeout(timer);
@@ -79,85 +91,116 @@ export function AnalyzeForm() {
   const onSubmit = async (data: AnalyzeCompanyInput) => {
     const result = await analyze.mutateAsync(data);
     if (result.cached) {
-      // 캐시 히트: 즉시 기업 페이지로 이동
       router.push(`/company/${result.company.id}`);
     } else {
-      // 새 분석 큐잉: 기업 목록 페이지에서 결과 확인
-      router.push('/company');
+      setPendingJobId(result.jobId);
     }
   };
+
+  const isPending = analyze.isPending || !!pendingJobId;
 
   return (
     <div ref={containerRef}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5 relative">
-            <Label htmlFor="name">기업명</Label>
-            <Input
-              id="name"
-              placeholder="카카오"
-              autoComplete="off"
-              {...register('name')}
-              onChange={(e) => handleNameChange(e.target.value)}
-              onFocus={() => {
-                if (suggestions.length > 0 && !selectedFromList) setShowSuggestions(true);
-              }}
-            />
-            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+        {/* 기업명 */}
+        <div className="space-y-1.5 relative">
+          <Label htmlFor="name">기업명 *</Label>
+          <Input
+            id="name"
+            placeholder="카카오"
+            autoComplete="off"
+            {...register('name')}
+            onChange={(e) => handleNameChange(e.target.value)}
+            onFocus={() => {
+              if (suggestions.length > 0 && !selectedFromList) setShowSuggestions(true);
+            }}
+          />
+          {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
 
-            {showSuggestions && (
-              <div className="absolute z-10 top-full mt-1 left-0 right-0 bg-white border border-slate-200 rounded-md shadow-md overflow-hidden">
-                <p className="text-xs text-slate-400 px-3 pt-2 pb-1">기존 기업 선택</p>
-                {suggestions.map((company) => (
-                  <button
-                    key={company.id}
-                    type="button"
-                    onClick={() => handleSelectSuggestion(company)}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-slate-50 transition-colors"
-                  >
-                    <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="flex-1 truncate text-slate-800">{company.name}</span>
-                    {company.analyzedAt && (
-                      <span className="text-xs text-green-600 shrink-0">분석 완료</span>
-                    )}
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                  </button>
-                ))}
-                <div className="border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowSuggestions(false);
-                      setSelectedFromList(true);
-                    }}
-                    className="w-full px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 text-left transition-colors"
-                  >
-                    새 기업으로 분석 →
-                  </button>
-                </div>
+          {showSuggestions && (
+            <div className="absolute z-10 top-full mt-1 left-0 right-0 bg-white border border-slate-200 rounded-md shadow-md overflow-hidden">
+              <p className="text-xs text-slate-400 px-3 pt-2 pb-1">기존 기업 선택</p>
+              {suggestions.map((company) => (
+                <button
+                  key={company.id}
+                  type="button"
+                  onClick={() => handleSelectSuggestion(company)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-slate-50 transition-colors"
+                >
+                  <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="flex-1 truncate text-slate-800">{company.name}</span>
+                  {company.analyzedAt && (
+                    <span className="text-xs text-green-600 shrink-0">분석 완료</span>
+                  )}
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                </button>
+              ))}
+              <div className="border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    setSelectedFromList(true);
+                  }}
+                  className="w-full px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 text-left transition-colors"
+                >
+                  새 기업으로 분석 →
+                </button>
               </div>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="jobTitle">지원 직무 (선택)</Label>
-            <Input id="jobTitle" placeholder="프론트엔드 개발자" {...register('jobTitle')} />
-          </div>
+            </div>
+          )}
         </div>
+
+        {/* 채용공고 */}
+        <div className="space-y-1.5">
+          <Label htmlFor="jobPostingText">
+            채용공고 텍스트{' '}
+            <span className="text-slate-400 font-normal text-xs">(붙여넣기 권장 — 직무·역량·갭 분석에 활용)</span>
+          </Label>
+          <Textarea
+            id="jobPostingText"
+            rows={8}
+            placeholder="채용공고 페이지 전체 내용을 붙여넣으세요. 직무 요건, 우대 사항, 지원 자격 등이 포함될수록 분석 품질이 높아집니다."
+            className="resize-y text-sm"
+            {...register('jobPostingText')}
+          />
+          {errors.jobPostingText && (
+            <p className="text-xs text-red-500">{errors.jobPostingText.message}</p>
+          )}
+        </div>
+
+        {/* 추가 맥락 */}
         <div className="space-y-1.5">
           <Label htmlFor="additionalContext">추가 맥락 (선택)</Label>
           <Input
             id="additionalContext"
-            placeholder="채용공고에서 특별히 강조한 내용, 사업부 정보 등"
+            placeholder="특정 사업부, 팀 문화, 강조된 키워드 등"
             {...register('additionalContext')}
           />
         </div>
+
         {analyze.isError && (
           <p className="text-xs text-red-500">
             {analyze.error instanceof Error ? analyze.error.message : '분석에 실패했습니다.'}
           </p>
         )}
-        <Button type="submit" disabled={analyze.isPending}>
-          {analyze.isPending ? 'AI 분석 중...' : '기업 분석 시작'}
+
+        {pendingJobId && (
+          <p className="text-xs text-blue-600 flex items-center gap-1">
+            <Loader2 className="w-3 h-3 animate-spin" />
+            기업과 직무를 분석하는 중입니다... 완료되면 자동으로 이동합니다.
+          </p>
+        )}
+
+        <Button type="submit" disabled={isPending}>
+          {isPending ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              AI 분석 중...
+            </span>
+          ) : (
+            '기업 + 직무 분석 시작'
+          )}
         </Button>
       </form>
     </div>
