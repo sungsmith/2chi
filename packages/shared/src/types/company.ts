@@ -1,3 +1,5 @@
+import type { CompetencyGapDto } from './cover-letter';
+
 export interface CompanyOfficialInfo {
   summary: string;
   products: string[];
@@ -12,15 +14,6 @@ export interface CompanyJobInfo {
   jobSummary: string;
 }
 
-export interface CompetencyGapResult {
-  required: string[];
-  preferred: string[];
-  myMatched: string[];
-  myMissing: string[];
-  score: number;
-  summary: string;
-}
-
 export interface CompanyDto {
   id: string;
   userId: string;
@@ -29,7 +22,7 @@ export interface CompanyDto {
   officialInfo: CompanyOfficialInfo | null;
   keyCompetencies: string[];
   jobInfo: CompanyJobInfo | null;
-  gapResult: CompetencyGapResult | null;
+  gapResult: CompetencyGapDto | null;
   analyzedAt: string | null;
   createdAt: string;
 }
