@@ -7,7 +7,7 @@ export const createCompanySchema = z.object({
 
 export const analyzeCompanySchema = z.object({
   name: z.string().min(1, '기업명을 입력하세요.').max(100),
-  jobTitle: z.string().max(100).optional(),
+  jobPostingText: z.string().max(100_000).optional(),
   additionalContext: z.string().max(1000).optional(),
 });
 

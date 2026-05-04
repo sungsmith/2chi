@@ -2,6 +2,23 @@ export interface CompanyOfficialInfo {
   summary: string;
   products: string[];
   recentNews: string[];
+  culture?: string;
+}
+
+export interface CompanyJobInfo {
+  jobTitle: string;
+  requiredCompetencies: string[];
+  preferredCompetencies: string[];
+  jobSummary: string;
+}
+
+export interface CompetencyGapResult {
+  required: string[];
+  preferred: string[];
+  myMatched: string[];
+  myMissing: string[];
+  score: number;
+  summary: string;
 }
 
 export interface CompanyDto {
@@ -10,8 +27,9 @@ export interface CompanyDto {
   name: string;
   industry: string | null;
   officialInfo: CompanyOfficialInfo | null;
-  unofficialInfo: Record<string, unknown> | null;
   keyCompetencies: string[];
+  jobInfo: CompanyJobInfo | null;
+  gapResult: CompetencyGapResult | null;
   analyzedAt: string | null;
   createdAt: string;
 }
