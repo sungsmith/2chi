@@ -1,0 +1,64 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase2-b-job-posting-scrape",
+  "steps": [
+    {
+      "step": 0,
+      "name": "shared-job-posting-scrape-types",
+      "status": "completed",
+      "started_at": "2026-04-25T13:46:57+09:00",
+      "summary": "scrapeJobPostingSchema, parseJobPostingSchema, CompetencyGapDto 추가 완료 — packages/shared 빌드 통과",
+      "completed_at": "2026-04-25T13:48:14+09:00"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-scrape",
+      "status": "completed",
+      "started_at": "2026-04-25T13:48:14+09:00",
+      "summary": "scrape.prompt.ts 생성(buildScrapeParsePrompt, buildCompetencyGapPrompt), AiService에 parseJobPostingFromHtml, analyzeCompetencyGap, extractTextFromHtml(cheerio, 8000자 절단) 추가",
+      "completed_at": "2026-04-25T13:50:14+09:00"
+    },
+    {
+      "step": 2,
+      "name": "job-postings-scrape-api",
+      "status": "completed",
+      "started_at": "2026-04-25T13:50:14+09:00",
+      "summary": "POST /job-postings/scrape 엔드포인트 추가 완료 — URL fetch(10초 타임아웃) → AI 파싱 → Company upsert → JobPosting 저장, job-postings 모듈 신규 생성(service/controller/module/dto)",
+      "completed_at": "2026-04-25T13:53:43+09:00"
+    },
+    {
+      "step": 3,
+      "name": "company-analysis-enhanced-api",
+      "status": "completed",
+      "started_at": "2026-04-25T13:53:43+09:00",
+      "summary": "POST /companies/:id/gap-analysis 엔드포인트 추가 완료 — GapAnalysisDto, analyzeGap() 서비스 메서드, 컨트롤러 엔드포인트 구현",
+      "completed_at": "2026-04-25T13:56:32+09:00"
+    },
+    {
+      "step": 4,
+      "name": "job-posting-scrape-hooks",
+      "status": "completed",
+      "started_at": "2026-04-25T13:56:32+09:00",
+      "summary": "use-job-postings.ts 생성(useJobPostings/useJobPosting/useScrapeJobPosting/useParseJobPosting/useDeleteJobPosting), use-companies.ts에 useCompetencyGapAnalysis mutation 추가 완료",
+      "completed_at": "2026-04-25T13:57:48+09:00"
+    },
+    {
+      "step": 5,
+      "name": "job-posting-scrape-ui",
+      "status": "completed",
+      "started_at": "2026-04-25T13:57:48+09:00",
+      "summary": "ScrapeModal(URL→폴백→확인 2단계), JobPostingCard, 채용공고 목록 페이지, 사이드바 메뉴 추가 완료 — lint·build 통과",
+      "completed_at": "2026-04-25T13:59:57+09:00"
+    },
+    {
+      "step": 6,
+      "name": "company-analysis-enhanced-ui",
+      "status": "completed",
+      "started_at": "2026-04-25T13:59:57+09:00",
+      "summary": "CompetencyGap 컴포넌트 생성, 기업 상세 페이지에 역량 갭 분석 섹션 추가 완료",
+      "completed_at": "2026-04-25T14:01:23+09:00"
+    }
+  ],
+  "created_at": "2026-04-25T13:46:57+09:00",
+  "completed_at": "2026-04-25T14:01:23+09:00"
+}

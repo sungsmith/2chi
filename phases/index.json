@@ -2,23 +2,65 @@
   "phases": [
     {
       "dir": "phase1-a-foundation-auth",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-19T10:18:58+09:00"
     },
     {
       "dir": "phase1-b-experience",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-19T00:00:00+09:00"
     },
     {
       "dir": "phase1-c-cover-letter",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-19T00:00:00+09:00"
     },
     {
       "dir": "phase1-d-applications-calendar",
-      "status": "pending"
+      "status": "completed",
+      "failed_at": "2026-04-19T10:27:34+09:00",
+      "completed_at": "2026-04-19T17:58:21+09:00"
     },
     {
       "dir": "phase1-e-company-analysis",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-19T18:35:48+09:00"
+    },
+    {
+      "dir": "phase2-a-career-desc",
+      "status": "completed",
+      "completed_at": "2026-04-24T19:54:01+09:00"
+    },
+    {
+      "dir": "phase2-b-job-posting-scrape",
+      "status": "completed",
+      "completed_at": "2026-04-25T14:01:23+09:00"
+    },
+    {
+      "dir": "phase2-c-onboarding-pdf",
+      "status": "completed",
+      "completed_at": "2026-04-27T19:01:16+09:00"
+    },
+    {
+      "dir": "phase3-a-portfolio",
+      "status": "completed",
+      "completed_at": "2026-04-30T22:16:28+09:00"
+    },
+    {
+      "dir": "phase3-b-interview-prep",
+      "status": "completed",
+      "completed_at": "2026-04-30T22:30:21+09:00"
+    },
+    {
+      "dir": "phase3-c-resume-profile",
+      "status": "completed",
+      "completed_at": "2026-04-30T23:04:41+09:00"
+    },
+    {
+      "dir": "phase3-d-analytics",
+      "status": "completed",
+      "failed_at": "2026-04-30T23:05:38+09:00",
+      "completed_at": "2026-05-01T09:07:45+09:00"
     }
   ]
 }

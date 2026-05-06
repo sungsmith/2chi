@@ -1,0 +1,48 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase2-c-onboarding-pdf",
+  "steps": [
+    {
+      "step": 0,
+      "name": "shared-onboarding-types",
+      "status": "completed",
+      "started_at": "2026-04-27T18:48:32+09:00",
+      "summary": "ParsedExperience, OnboardingParseResultDto, confirmOnboardingSchema 추가 완료",
+      "completed_at": "2026-04-27T18:49:22+09:00"
+    },
+    {
+      "step": 1,
+      "name": "ai-prompts-resume-parse",
+      "status": "completed",
+      "started_at": "2026-04-27T18:49:22+09:00",
+      "summary": "resume-parse.prompt.ts 생성, AiService에 parseResumeToExperiences() 추가 (gpt-4o-mini, JSON 출력)",
+      "completed_at": "2026-04-27T18:52:13+09:00"
+    },
+    {
+      "step": 2,
+      "name": "onboarding-api",
+      "status": "completed",
+      "started_at": "2026-04-27T18:52:13+09:00",
+      "summary": "OnboardingModule 구현 완료 — parse(PDF/DOCX → AI 구조화 → Cache), confirm(Experience 생성) 엔드포인트",
+      "completed_at": "2026-04-27T18:57:21+09:00"
+    },
+    {
+      "step": 3,
+      "name": "onboarding-hooks",
+      "status": "completed",
+      "started_at": "2026-04-27T18:57:21+09:00",
+      "summary": "use-onboarding.ts 생성 (useParseResume: fetch+FormData, useConfirmParsed: experiences 캐시 무효화)",
+      "completed_at": "2026-04-27T18:58:41+09:00"
+    },
+    {
+      "step": 4,
+      "name": "onboarding-ui",
+      "status": "completed",
+      "started_at": "2026-04-27T18:58:41+09:00",
+      "summary": "온보딩 2단계 UI 구현 완료 — ResumeUploadZone, ParsedExperienceItem, 온보딩 페이지, 사이드바 메뉴 추가",
+      "completed_at": "2026-04-27T19:01:16+09:00"
+    }
+  ],
+  "created_at": "2026-04-27T18:48:32+09:00",
+  "completed_at": "2026-04-27T19:01:16+09:00"
+}

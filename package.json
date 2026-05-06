@@ -2,12 +2,18 @@
   "name": "2chi",
   "version": "0.0.1",
   "private": true,
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
     "execute": "tsx scripts/execute.ts"
   },
   "devDependencies": {
     "@types/node": "^20.19.39",
     "tsx": "^4.21.0",
+    "turbo": "^2.0.0",
     "typescript": "^5.9.3"
   }
 }

@@ -1,0 +1,56 @@
+{
+  "project": "이취 (2chi)",
+  "phase": "phase2-a-career-desc",
+  "steps": [
+    {
+      "step": 0,
+      "name": "shared-career-desc-types",
+      "status": "completed",
+      "started_at": "2026-04-24T19:30:30+09:00",
+      "summary": "packages/shared에 CareerDescriptionDto, SectionType, Zod 스키마 추가 완료",
+      "completed_at": "2026-04-24T19:31:26+09:00"
+    },
+    {
+      "step": 1,
+      "name": "files-module",
+      "status": "completed",
+      "started_at": "2026-04-24T19:31:26+09:00",
+      "summary": "FilesModule(R2 업로드/Signed URL/삭제) 구현 완료, AppModule에 등록, .env.example에 R2 변수 5개 문서화",
+      "completed_at": "2026-04-24T19:35:20+09:00"
+    },
+    {
+      "step": 2,
+      "name": "ai-prompts-career-desc",
+      "status": "completed",
+      "started_at": "2026-04-24T19:35:20+09:00",
+      "summary": "career-description.prompt.ts 생성, AiService에 streamCareerDescSectionDraft() 추가",
+      "completed_at": "2026-04-24T19:36:47+09:00"
+    },
+    {
+      "step": 3,
+      "name": "career-descriptions-api",
+      "status": "completed",
+      "started_at": "2026-04-24T19:36:47+09:00",
+      "summary": "CareerDescriptionsModule 구현 완료 — CRUD, SSE 스트리밍, Puppeteer PDF → R2 생성 포함",
+      "completed_at": "2026-04-24T19:47:34+09:00"
+    },
+    {
+      "step": 4,
+      "name": "career-desc-hooks",
+      "status": "completed",
+      "started_at": "2026-04-24T19:47:34+09:00",
+      "summary": "use-career-descriptions.ts, use-section-draft.ts 훅 생성 완료",
+      "completed_at": "2026-04-24T19:49:21+09:00"
+    },
+    {
+      "step": 5,
+      "name": "career-desc-ui",
+      "status": "completed",
+      "started_at": "2026-04-24T19:49:21+09:00",
+      "summary": "경력기술서 목록/편집 페이지, SectionEditor, 사이드바 메뉴 추가 완료",
+      "completed_at": "2026-04-24T19:54:01+09:00"
+    }
+  ],
+  "created_at": "2026-04-24T19:30:30+09:00",
+  "completed_at": "2026-04-24T19:54:01+09:00"
+}
